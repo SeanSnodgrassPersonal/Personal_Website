@@ -3,18 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Snodgrass</title>
+    <title>Sean Snodgrass - Analytics Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #fdfcfa;
-            --secondary-bg: #f5f3ef;
-            --accent: #c44536;
-            --text-primary: #2a2420;
-            --text-secondary: #6b5d52;
-            --border: #e5e0d8;
+            --primary: #0A84FF;
+            --primary-dark: #0066CC;
+            --secondary: #5E5CE6;
+            --accent: #30D5C8;
+            --bg: #0A0E27;
+            --bg-card: #12162E;
+            --bg-hover: #1A1F3A;
+            --text: #E8EAED;
+            --text-dim: #9BA1A6;
+            --border: #1E2642;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
         }
 
         * {
@@ -24,55 +30,105 @@
         }
 
         body {
-            font-family: 'Manrope', sans-serif;
-            background: var(--primary-bg);
-            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        .noise {
+        /* Animated background grid */
+        .bg-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            opacity: 0.03;
-            z-index: 1000;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-image: 
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
         }
 
-        header {
-            padding: 3rem 2rem;
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Gradient orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            top: -10%;
+            right: 10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            bottom: -10%;
+            left: 10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+            animation-delay: 5s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 2rem 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             opacity: 0;
-            animation: fadeInDown 1s ease forwards;
+            animation: fadeInDown 0.8s ease 0.2s forwards;
         }
 
         .logo {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary);
             letter-spacing: -0.02em;
-            color: var(--text-primary);
         }
 
         nav ul {
             display: flex;
-            gap: 2.5rem;
+            gap: 2rem;
             list-style: none;
         }
 
         nav a {
-            font-size: 0.95rem;
-            font-weight: 400;
-            color: var(--text-secondary);
+            color: var(--text-dim);
             text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
             transition: color 0.3s ease;
             position: relative;
         }
@@ -83,116 +139,195 @@
             bottom: -4px;
             left: 0;
             width: 0;
-            height: 1px;
-            background: var(--accent);
+            height: 2px;
+            background: var(--primary);
             transition: width 0.3s ease;
         }
 
         nav a:hover {
-            color: var(--accent);
+            color: var(--text);
         }
 
         nav a:hover::after {
             width: 100%;
         }
 
-        main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
+        /* Hero Section */
         .hero {
-            padding: 8rem 0 6rem;
-            border-bottom: 1px solid var(--border);
+            padding: 8rem 0 10rem;
             opacity: 0;
-            animation: fadeIn 1s ease 0.3s forwards;
+            animation: fadeIn 1s ease 0.4s forwards;
         }
 
         .hero-content {
-            max-width: 700px;
+            max-width: 800px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(10, 132, 255, 0.1);
+            border: 1px solid rgba(10, 132, 255, 0.3);
+            border-radius: 20px;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            letter-spacing: 0.5px;
         }
 
         .hero h1 {
-            font-family: 'Libre Baskerville', serif;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            font-weight: 700;
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .hero .subtitle {
-            font-size: 1.35rem;
-            color: var(--text-secondary);
+            font-size: 1.5rem;
+            color: var(--text-dim);
             margin-bottom: 2rem;
             font-weight: 300;
-            line-height: 1.5;
         }
 
         .hero .description {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            line-height: 1.8;
             margin-bottom: 3rem;
+            max-width: 600px;
         }
 
-        .cta-button {
-            display: inline-block;
-            padding: 1rem 2.5rem;
-            background: var(--accent);
-            color: white;
-            text-decoration: none;
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
             font-weight: 600;
             font-size: 0.95rem;
-            letter-spacing: 0.03em;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
-            border: 2px solid var(--accent);
+            cursor: pointer;
         }
 
-        .cta-button:hover {
-            background: transparent;
-            color: var(--accent);
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(196, 69, 54, 0.2);
+            box-shadow: 0 8px 20px rgba(10, 132, 255, 0.3);
         }
 
-        .projects {
-            padding: 6rem 0;
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.1);
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding: 3rem 0;
+            margin-bottom: 6rem;
             opacity: 0;
-            animation: fadeIn 1s ease 0.5s forwards;
+            animation: fadeIn 1s ease 0.6s forwards;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+
+        /* Projects Section */
+        .projects {
+            padding: 4rem 0 6rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 0.8s forwards;
         }
 
         .section-header {
             margin-bottom: 4rem;
         }
 
-        .section-title {
-            font-family: 'Libre Baskerville', serif;
-            font-size: 2.5rem;
+        .section-tag {
+            display: inline-block;
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 1px;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
             font-weight: 700;
+            margin-bottom: 1rem;
         }
 
         .section-subtitle {
             font-size: 1.1rem;
-            color: var(--text-secondary);
+            color: var(--text-dim);
             font-weight: 300;
         }
 
         .project-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 3rem;
+            gap: 2rem;
         }
 
         .project-card {
-            background: var(--secondary-bg);
-            padding: 3rem 2.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border);
         }
 
         .project-card::before {
@@ -202,7 +337,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background: var(--accent);
+            background: var(--gradient-2);
             transform: scaleX(0);
             transform-origin: left;
             transition: transform 0.4s ease;
@@ -213,31 +348,49 @@
         }
 
         .project-card:hover {
+            border-color: var(--primary);
             transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 12px 40px rgba(10, 132, 255, 0.2);
         }
 
         .project-icon {
-            font-size: 2.5rem;
+            width: 60px;
+            height: 60px;
+            background: rgba(10, 132, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
             margin-bottom: 1.5rem;
-            display: block;
+        }
+
+        .project-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(10, 132, 255, 0.1);
+            border: 1px solid rgba(10, 132, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
         }
 
         .project-card h3 {
-            font-family: 'Libre Baskerville', serif;
             font-size: 1.5rem;
             margin-bottom: 1rem;
             font-weight: 700;
         }
 
         .project-card p {
-            color: var(--text-secondary);
+            color: var(--text-dim);
             margin-bottom: 2rem;
             line-height: 1.7;
         }
 
         .project-link {
-            color: var(--accent);
+            color: var(--primary);
             text-decoration: none;
             font-weight: 600;
             font-size: 0.95rem;
@@ -260,43 +413,103 @@
             transform: translateX(4px);
         }
 
-        footer {
-            padding: 4rem 2rem 3rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            border-top: 1px solid var(--border);
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
+        /* Skills Section */
+        .skills {
+            padding: 6rem 0;
             opacity: 0;
-            animation: fadeIn 1s ease 0.7s forwards;
+            animation: fadeIn 1s ease 1s forwards;
         }
 
-        footer p {
-            margin-bottom: 1rem;
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            border-color: var(--primary);
+        }
+
+        .skill-category h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: rgba(10, 132, 255, 0.1);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--primary);
+            background: rgba(10, 132, 255, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 0 3rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-dim);
+            margin-top: 6rem;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.2s forwards;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .footer-links {
             display: flex;
             justify-content: center;
             gap: 2rem;
-            margin-top: 1.5rem;
+            margin: 2rem 0;
         }
 
         .footer-links a {
-            color: var(--text-secondary);
+            color: var(--text-dim);
             text-decoration: none;
             transition: color 0.3s ease;
+            font-size: 0.95rem;
         }
 
         .footer-links a:hover {
-            color: var(--accent);
+            color: var(--primary);
         }
 
+        .footer-emoji {
+            margin-top: 2rem;
+            font-size: 1.5rem;
+        }
+
+        /* Animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -315,11 +528,11 @@
             }
         }
 
+        /* Mobile Responsive */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
-                gap: 2rem;
-                padding: 2rem 1.5rem;
+                gap: 1.5rem;
             }
 
             nav ul {
@@ -327,111 +540,195 @@
             }
 
             .hero {
-                padding: 4rem 0 3rem;
+                padding: 4rem 0 6rem;
             }
 
-            .projects {
-                padding: 4rem 0;
-            }
-
-            .project-grid {
+            .stats {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+                gap: 1.5rem;
             }
 
-            .section-title {
-                font-size: 2rem;
+            .project-grid,
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                text-align: center;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="noise"></div>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
     
-    <header>
-        <div class="logo">Sean Snodgrass</div>
-        <nav>
-            <ul>
-                <li><a href="#home">Home</a></li>
-                <li><a href="#projects">Projects</a></li>
-                <li><a href="#contact">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
+    <div class="container">
+        <header>
+            <div class="logo">&lt;Sean/&gt;</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
 
-    <main>
-        <section id="home" class="hero">
-            <div class="hero-content">
-                <h1>Designer. Developer. Creator.</h1>
-                <p class="subtitle">Building thoughtful digital experiences</p>
-                <p class="description">
-                    Welcome to my corner of the internet. I'm passionate about creating meaningful 
-                    digital experiences that combine beautiful design with purposeful functionality. 
-                    From portfolio work to passion projects, I'm always exploring new ways to build 
-                    something worth sharing.
-                </p>
-                <a href="#projects" class="cta-button">VIEW MY WORK</a>
-            </div>
-        </section>
-
-        <section id="projects" class="projects">
-            <div class="section-header">
-                <h2 class="section-title">Featured Work</h2>
-                <p class="section-subtitle">Projects that showcase my journey</p>
-            </div>
-
-            <div class="project-grid">
-                <div class="project-card">
-                    <span class="project-icon">🎨</span>
-                    <h3>Creative Portfolio</h3>
-                    <p>
-                        A curated collection of my design work, creative projects, and visual explorations. 
-                        Showcasing my approach to design thinking and creative problem-solving.
+        <main>
+            <section id="home" class="hero">
+                <div class="hero-content">
+                    <span class="hero-tag">ANALYTICS ENGINEER</span>
+                    <h1>Building intelligent data solutions</h1>
+                    <p class="subtitle">ETL pipelines, process optimization, and AI-powered analytics</p>
+                    <p class="description">
+                        I'm Sean, an analytics engineer who loves turning messy data into actionable insights. 
+                        Currently building the future of data analysis with AI agents in Snowflake. When I'm not 
+                        optimizing pipelines, you'll find me on roller coasters or perfecting my bourbon cocktails.
                     </p>
-                    <a href="https://seansnodgrass.myportfolio.com" target="_blank" class="project-link">
-                        View Portfolio
-                    </a>
+                    <div class="cta-group">
+                        <a href="#projects" class="btn btn-primary">View My Work</a>
+                        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+                    </div>
                 </div>
+            </section>
 
-                <div class="project-card">
-                    <span class="project-icon">📖</span>
-                    <h3>Daily Bible Reading</h3>
-                    <p>
-                        A thoughtfully designed web application that makes daily scripture reading simple 
-                        and accessible. Built to encourage consistent engagement with biblical texts.
-                    </p>
-                    <a href="https://bible.seansnodgrass.com" target="_blank" class="project-link">
-                        Open App
-                    </a>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">🎢</div>
+                    <div class="stat-label">Roller Coaster Enthusiast</div>
                 </div>
-
-                <div class="project-card">
-                    <span class="project-icon">🚀</span>
-                    <h3>Future Projects</h3>
-                    <p>
-                        Always working on something new. This space is reserved for upcoming career work, 
-                        experiments, and ideas that are currently taking shape.
-                    </p>
-                    <a href="#contact" class="project-link">
-                        Stay Tuned
-                    </a>
+                <div class="stat-card">
+                    <div class="stat-number">❄️</div>
+                    <div class="stat-label">Skiing Adventurer</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">🥃</div>
+                    <div class="stat-label">Bourbon Connoisseur</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">🐕</div>
+                    <div class="stat-label">Dog Lover</div>
                 </div>
             </div>
-        </section>
-    </main>
 
-    <footer id="contact">
-        <p>Let's connect and create something great together.</p>
-        <p>&copy; 2026 Sean Snodgrass. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="mailto:contact@seansnodgrass.com">Email</a>
-            <a href="https://seansnodgrass.myportfolio.com" target="_blank">Portfolio</a>
-            <a href="https://bible.seansnodgrass.com" target="_blank">Bible App</a>
-        </div>
-    </footer>
+            <section id="projects" class="projects">
+                <div class="section-header">
+                    <span class="section-tag">Featured Work</span>
+                    <h2 class="section-title">Projects & Experiments</h2>
+                    <p class="section-subtitle">Solving problems with data and code</p>
+                </div>
+
+                <div class="project-grid">
+                    <div class="project-card">
+                        <div class="project-icon">🤖</div>
+                        <span class="project-tag">Snowflake • AI</span>
+                        <h3>Analytics Agent</h3>
+                        <p>
+                            Building the future of analytics with AI-powered agents in Snowflake. Automating 
+                            data analysis workflows and making insights accessible to everyone.
+                        </p>
+                        <a href="#contact" class="project-link">
+                            Learn More
+                        </a>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-icon">📖</div>
+                        <span class="project-tag">Web App • UX</span>
+                        <h3>Daily Reading App</h3>
+                        <p>
+                            A clean, modern web app that solves a UX problem I personally experienced. 
+                            Built with simplicity and daily usability in mind.
+                        </p>
+                        <a href="https://bible.seansnodgrass.com" target="_blank" class="project-link">
+                            View Project
+                        </a>
+                    </div>
+
+                    <div class="project-card">
+                        <div class="project-icon">🎨</div>
+                        <span class="project-tag">Portfolio</span>
+                        <h3>Creative Work</h3>
+                        <p>
+                            A collection of my design and creative projects. Showcasing my approach 
+                            to visual problem-solving and aesthetic exploration.
+                        </p>
+                        <a href="https://seansnodgrass.myportfolio.com" target="_blank" class="project-link">
+                            View Portfolio
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="skills" class="skills">
+                <div class="section-header">
+                    <span class="section-tag">Expertise</span>
+                    <h2 class="section-title">Technical Skills</h2>
+                    <p class="section-subtitle">Tools and technologies I work with daily</p>
+                </div>
+
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h3>Data & Analytics</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Snowflake</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">ETL Pipelines</span>
+                            <span class="skill-tag">Data Modeling</span>
+                            <span class="skill-tag">dbt</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Development</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">HTML/CSS</span>
+                            <span class="skill-tag">Git</span>
+                            <span class="skill-tag">APIs</span>
+                            <span class="skill-tag">Web Apps</span>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Process & Strategy</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Process Optimization</span>
+                            <span class="skill-tag">Automation</span>
+                            <span class="skill-tag">Analytics Strategy</span>
+                            <span class="skill-tag">AI Integration</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer id="contact">
+            <div class="footer-content">
+                <h3>Let's build something together</h3>
+                <p>Always open to interesting projects and opportunities</p>
+                <div class="footer-links">
+                    <a href="mailto:hello@seansnodgrass.com">Email</a>
+                    <a href="https://github.com/seansnodgrass" target="_blank">GitHub</a>
+                    <a href="https://www.linkedin.com/in/seansnodgrass" target="_blank">LinkedIn</a>
+                </div>
+                <div class="footer-emoji">🎢 🥃 ⛷️</div>
+                <p style="margin-top: 2rem; font-size: 0.85rem;">&copy; 2026 Sean Snodgrass</p>
+            </div>
+        </footer>
+    </div>
 
     <script>
-        // Smooth scrolling for navigation links
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -445,7 +742,7 @@
             });
         });
 
-        // Add active state to nav links on scroll
+        // Active nav state
         const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('nav a');
 
@@ -453,7 +750,6 @@
             let current = '';
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
                 if (scrollY >= (sectionTop - 200)) {
                     current = section.getAttribute('id');
                 }
@@ -462,8 +758,20 @@
             navLinks.forEach(link => {
                 link.style.color = '';
                 if (link.getAttribute('href').slice(1) === current) {
-                    link.style.color = 'var(--accent)';
+                    link.style.color = 'var(--primary)';
                 }
+            });
+        });
+
+        // Parallax effect for orbs
+        document.addEventListener('mousemove', (e) => {
+            const orbs = document.querySelectorAll('.orb');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            orbs.forEach((orb, index) => {
+                const speed = (index + 1) * 20;
+                orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
             });
         });
     </script>

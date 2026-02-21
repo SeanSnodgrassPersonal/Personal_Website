@@ -35,7 +35,218 @@
             color: var(--text);
             line-height: 1.6;
             overflow-x: hidden;
+            cursor: none;
         }
+
+        /* ── Custom Cursor ── */
+        #custom-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 28px;
+            height: 28px;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease;
+            font-size: 20px;
+            line-height: 1;
+            will-change: transform;
+        }
+        #cursor-trail {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary);
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            opacity: 0.5;
+            transition: all 0.18s ease;
+        }
+
+        /* ── ETL Progress Bar ── */
+        #etl-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            height: 36px;
+            background: rgba(10, 14, 39, 0.95);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            gap: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            overflow: hidden;
+        }
+        .etl-stage {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0 0.75rem;
+            height: 100%;
+            position: relative;
+            transition: color 0.4s ease;
+            white-space: nowrap;
+        }
+        .etl-stage .etl-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--border);
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            flex-shrink: 0;
+        }
+        .etl-stage.active {
+            color: var(--accent);
+        }
+        .etl-stage.active .etl-dot {
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+        }
+        .etl-stage.done {
+            color: var(--primary);
+        }
+        .etl-stage.done .etl-dot {
+            background: var(--primary);
+        }
+        .etl-connector {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            position: relative;
+            overflow: hidden;
+            min-width: 20px;
+        }
+        .etl-connector-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.5s ease;
+        }
+        #etl-percent {
+            margin-left: auto;
+            color: var(--primary);
+            font-size: 0.65rem;
+            padding-left: 0.75rem;
+            white-space: nowrap;
+        }
+
+        /* ── SQL Intro Overlay ── */
+        #sql-intro {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 14, 39, 0.97);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 0.7s ease;
+        }
+        #sql-intro.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .sql-terminal {
+            width: min(680px, 92vw);
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+        }
+        .sql-terminal-bar {
+            background: #161b22;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .term-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .term-btn.close { background: #ff5f57; }
+        .term-btn.min   { background: #febc2e; }
+        .term-btn.max   { background: #28c840; }
+        .term-title {
+            margin-left: auto;
+            margin-right: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .sql-body {
+            padding: 1.75rem 2rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            line-height: 1.9;
+            min-height: 220px;
+        }
+        .sql-prompt { color: var(--accent); }
+        .sql-kw { color: #ff7b72; }
+        .sql-fn { color: #d2a8ff; }
+        .sql-str { color: #a5d6ff; }
+        .sql-num { color: #79c0ff; }
+        .sql-cmt { color: #8b949e; }
+        .sql-out { color: var(--text); }
+        .sql-out-dim { color: var(--text-dim); }
+        .sql-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--accent);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        .sql-results {
+            margin-top: 0.5rem;
+            border-top: 1px solid var(--border);
+            padding-top: 0.75rem;
+            display: none;
+        }
+        .sql-results table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .sql-results th {
+            color: var(--primary);
+            text-align: left;
+            padding: 0.15rem 0.75rem 0.15rem 0;
+            font-size: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sql-results td {
+            color: var(--text);
+            padding: 0.2rem 0.75rem 0.2rem 0;
+            font-size: 0.75rem;
+        }
+        .sql-skip {
+            text-align: right;
+            padding: 0.75rem 2rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            cursor: pointer;
+        }
+        .sql-skip:hover { color: var(--primary); }
+        .sql-skip span { cursor: pointer; }
 
         /* Animated background grid */
         .bg-grid {
@@ -44,7 +255,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(var(--border) 1px, transparent 1px),
                 linear-gradient(90deg, var(--border) 1px, transparent 1px);
             background-size: 50px 50px;
@@ -98,6 +309,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+            padding-top: 36px; /* offset for ETL bar */
         }
 
         /* Header */
@@ -174,6 +386,7 @@
             font-weight: 600;
             margin-bottom: 2rem;
             letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .hero h1 {
@@ -185,6 +398,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            min-height: 1.1em; /* prevent jump during typewriter */
         }
 
         .hero .subtitle {
@@ -219,7 +433,7 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            cursor: pointer;
+            cursor: none;
         }
 
         .btn-primary {
@@ -320,17 +534,37 @@
             gap: 2rem;
         }
 
-        .project-card {
+        /* ── Card Flip ── */
+        .project-card-wrapper {
+            perspective: 1200px;
+            height: 360px;
+        }
+        .project-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .project-card-wrapper:hover .project-card-inner {
+            transform: rotateY(180deg);
+        }
+        .project-card-front,
+        .project-card-back {
+            position: absolute;
+            inset: 0;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 2.5rem;
-            transition: all 0.4s ease;
-            position: relative;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
             overflow: hidden;
         }
-
-        .project-card::before {
+        .project-card-front {
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .project-card-front::before {
             content: '';
             position: absolute;
             top: 0;
@@ -342,15 +576,120 @@
             transform-origin: left;
             transition: transform 0.4s ease;
         }
-
-        .project-card:hover::before {
+        .project-card-wrapper:hover .project-card-front::before {
             transform: scaleX(1);
         }
-
-        .project-card:hover {
+        .project-card-wrapper:hover .project-card-front {
             border-color: var(--primary);
-            transform: translateY(-8px);
             box-shadow: 0 12px 40px rgba(10, 132, 255, 0.2);
+        }
+        .project-card-back {
+            transform: rotateY(180deg);
+            background: var(--bg-hover);
+            border-color: var(--primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .project-card-back h4 {
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 0.25rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .project-card-back p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .back-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .back-stack span {
+            padding: 0.3rem 0.7rem;
+            background: rgba(10,132,255,0.15);
+            border: 1px solid rgba(10,132,255,0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .back-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+        .back-link:hover { gap: 0.8rem; }
+        .back-link::after { content: '→'; }
+
+        /* ── Data Pipeline on Cards ── */
+        .pipeline-mini {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin-bottom: 1.25rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: var(--text-dim);
+        }
+        .pipe-node {
+            padding: 0.2rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            white-space: nowrap;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .pipe-arrow {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            position: relative;
+            min-width: 10px;
+        }
+        .pipe-arrow::after {
+            content: '';
+            position: absolute;
+            right: -1px;
+            top: -3px;
+            border-left: 5px solid var(--border);
+            border-top: 3px solid transparent;
+            border-bottom: 3px solid transparent;
+            transition: border-left-color 0.3s;
+        }
+        /* Animate pipeline nodes on card hover */
+        .project-card-wrapper:hover .pipe-node:nth-child(1) {
+            border-color: var(--accent);
+            color: var(--accent);
+            animation: pipeFlow 1.2s ease 0s infinite;
+        }
+        .project-card-wrapper:hover .pipe-node:nth-child(3) {
+            border-color: var(--primary);
+            color: var(--primary);
+            animation: pipeFlow 1.2s ease 0.3s infinite;
+        }
+        .project-card-wrapper:hover .pipe-node:nth-child(5) {
+            border-color: var(--secondary);
+            color: var(--secondary);
+            animation: pipeFlow 1.2s ease 0.6s infinite;
+        }
+        .project-card-wrapper:hover .pipe-arrow::after {
+            border-left-color: var(--primary);
+        }
+        @keyframes pipeFlow {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
         .project-icon {
@@ -362,7 +701,7 @@
             align-items: center;
             justify-content: center;
             font-size: 1.8rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .project-tag {
@@ -377,40 +716,16 @@
             font-weight: 600;
         }
 
-        .project-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+        .project-card-front h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.75rem;
             font-weight: 700;
         }
 
-        .project-card p {
+        .project-card-front p {
             color: var(--text-dim);
-            margin-bottom: 2rem;
-            line-height: 1.7;
-        }
-
-        .project-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: gap 0.3s ease;
-        }
-
-        .project-link:hover {
-            gap: 1rem;
-        }
-
-        .project-link::after {
-            content: '→';
-            transition: transform 0.3s ease;
-        }
-
-        .project-link:hover::after {
-            transform: translateX(4px);
+            font-size: 0.92rem;
+            line-height: 1.65;
         }
 
         /* Skills Section */
@@ -505,6 +820,67 @@
             font-size: 1.5rem;
         }
 
+        /* ── Konami / Coaster Easter Egg ── */
+        #coaster-track {
+            position: fixed;
+            bottom: 120px;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 99990;
+            overflow: hidden;
+            height: 60px;
+            display: none;
+        }
+        #coaster-car {
+            position: absolute;
+            bottom: 0;
+            left: -100px;
+            font-size: 2.2rem;
+            animation: coasterRide 3.2s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+            filter: drop-shadow(0 4px 12px rgba(10,132,255,0.6));
+        }
+        #coaster-track-line {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), var(--accent), var(--primary), transparent);
+            border-radius: 2px;
+        }
+        @keyframes coasterRide {
+            0%   { left: -100px; transform: rotate(-5deg) scaleX(-1); }
+            10%  { transform: rotate(-12deg) scaleX(-1); }
+            20%  { transform: rotate(8deg) scaleX(-1); }
+            30%  { transform: rotate(-15deg) scaleX(-1); }
+            40%  { transform: rotate(5deg) scaleX(-1); }
+            50%  { left: 50%; transform: rotate(-8deg) scaleX(-1); }
+            60%  { transform: rotate(10deg) scaleX(-1); }
+            80%  { transform: rotate(-10deg) scaleX(-1); }
+            95%  { left: calc(100% + 60px); transform: rotate(5deg) scaleX(-1); }
+            100% { left: calc(100% + 100px); transform: rotate(0deg) scaleX(-1); }
+        }
+        #konami-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--bg-card);
+            border: 1px solid var(--primary);
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+            z-index: 99991;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+        }
+        #konami-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -530,6 +906,9 @@
 
         /* Mobile Responsive */
         @media (max-width: 768px) {
+            body { cursor: auto; }
+            #custom-cursor, #cursor-trail { display: none; }
+
             header {
                 flex-direction: column;
                 gap: 1.5rem;
@@ -560,15 +939,103 @@
             .btn {
                 text-align: center;
                 justify-content: center;
+                cursor: auto;
+            }
+
+            .project-card-wrapper {
+                height: auto;
+            }
+            .project-card-inner {
+                transform: none !important;
+            }
+            .project-card-back {
+                display: none;
+            }
+            .project-card-front {
+                position: relative;
+                height: auto;
             }
         }
     </style>
 </head>
 <body>
+
+    <!-- ── SQL Intro Overlay ── -->
+    <div id="sql-intro">
+        <div style="width:min(680px,92vw)">
+            <div class="sql-terminal">
+                <div class="sql-terminal-bar">
+                    <div class="term-btn close"></div>
+                    <div class="term-btn min"></div>
+                    <div class="term-btn max"></div>
+                    <span class="term-title">snowflake://seansnodgrass • query</span>
+                </div>
+                <div class="sql-body" id="sql-body"></div>
+                <div class="sql-results" id="sql-results">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>NAME</th>
+                                <th>ROLE</th>
+                                <th>VIBE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sean Snodgrass</td>
+                                <td>Analytics Engineer</td>
+                                <td>🎢 bourbon &amp; data</td>
+                                <td style="color:var(--accent)">● available</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:0.6rem;color:var(--text-dim);font-size:0.72rem">1 row returned in 0.042s</div>
+                </div>
+            </div>
+            <div class="sql-skip"><span id="sql-skip-btn">[ press any key or click to skip ]</span></div>
+        </div>
+    </div>
+
+    <!-- ── ETL Progress Bar ── -->
+    <div id="etl-progress">
+        <div class="etl-stage" id="etl-extract">
+            <div class="etl-dot"></div>
+            <span>EXTRACT</span>
+        </div>
+        <div class="etl-connector"><div class="etl-connector-fill" id="conn-1"></div></div>
+        <div class="etl-stage" id="etl-transform">
+            <div class="etl-dot"></div>
+            <span>TRANSFORM</span>
+        </div>
+        <div class="etl-connector"><div class="etl-connector-fill" id="conn-2"></div></div>
+        <div class="etl-stage" id="etl-load">
+            <div class="etl-dot"></div>
+            <span>LOAD</span>
+        </div>
+        <div class="etl-connector"><div class="etl-connector-fill" id="conn-3"></div></div>
+        <div class="etl-stage" id="etl-deliver">
+            <div class="etl-dot"></div>
+            <span>DELIVER</span>
+        </div>
+        <div id="etl-percent">0%</div>
+    </div>
+
+    <!-- ── Custom Cursor ── -->
+    <div id="custom-cursor">🎢</div>
+    <div id="cursor-trail"></div>
+
+    <!-- ── Konami Easter Egg ── -->
+    <div id="coaster-track">
+        <div id="coaster-track-line"></div>
+        <div id="coaster-car">🎢</div>
+    </div>
+    <div id="konami-toast">🎢 cheat code unlocked — nice one!</div>
+
     <div class="bg-grid"></div>
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
-    
+
     <div class="container">
         <header>
             <div class="logo">&lt;Sean/&gt;</div>
@@ -585,12 +1052,12 @@
         <main>
             <section id="home" class="hero">
                 <div class="hero-content">
-                    <span class="hero-tag">ANALYTICS ENGINEER</span>
-                    <h1>Building intelligent data solutions</h1>
+                    <span class="hero-tag" id="hero-tag">ANALYTICS ENGINEER</span>
+                    <h1 id="hero-h1"></h1>
                     <p class="subtitle">ETL pipelines, process optimization, and AI-powered analytics</p>
                     <p class="description">
-                        I'm Sean, an analytics engineer who loves turning messy data into actionable insights. 
-                        Currently building the future of data analysis with AI agents in Snowflake. When I'm not 
+                        I'm Sean, an analytics engineer who loves turning messy data into actionable insights.
+                        Currently building the future of data analysis with AI agents in Snowflake. When I'm not
                         optimizing pipelines, you'll find me on roller coasters or perfecting my bourbon cocktails.
                     </p>
                     <div class="cta-group">
@@ -627,44 +1094,103 @@
                 </div>
 
                 <div class="project-grid">
-                    <div class="project-card">
-                        <div class="project-icon">🤖</div>
-                        <span class="project-tag">Snowflake • AI</span>
-                        <h3>Analytics Agent</h3>
-                        <p>
-                            Building the future of analytics with AI-powered agents in Snowflake. Automating 
-                            data analysis workflows and making insights accessible to everyone.
-                        </p>
-                        <a href="#contact" class="project-link">
-                            Learn More
-                        </a>
+
+                    <!-- Analytics Agent -->
+                    <div class="project-card-wrapper">
+                        <div class="project-card-inner">
+                            <div class="project-card-front">
+                                <div class="pipeline-mini">
+                                    <div class="pipe-node">Source</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Agent</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Insight</div>
+                                </div>
+                                <div class="project-icon">🤖</div>
+                                <span class="project-tag">Snowflake • AI</span>
+                                <h3>Analytics Agent</h3>
+                                <p>Building the future of analytics with AI-powered agents in Snowflake. Automating data analysis workflows and making insights accessible to everyone.</p>
+                            </div>
+                            <div class="project-card-back">
+                                <div>
+                                    <h4>Tech Stack</h4>
+                                    <div class="back-stack">
+                                        <span>Snowflake</span><span>Python</span><span>AI Agents</span><span>SQL</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>What I learned</h4>
+                                    <p>Orchestrating LLM reasoning over live warehouse data requires tight prompt constraints and robust fallback routing.</p>
+                                </div>
+                                <a href="#contact" class="back-link">Get in touch</a>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="project-card">
-                        <div class="project-icon">📖</div>
-                        <span class="project-tag">Web App • UX</span>
-                        <h3>Daily Reading App</h3>
-                        <p>
-                            A clean, modern web app that solves a UX problem I personally experienced. 
-                            Built with simplicity and daily usability in mind.
-                        </p>
-                        <a href="https://bible.seansnodgrass.com" target="_blank" class="project-link">
-                            View Project
-                        </a>
+                    <!-- Daily Reading App -->
+                    <div class="project-card-wrapper">
+                        <div class="project-card-inner">
+                            <div class="project-card-front">
+                                <div class="pipeline-mini">
+                                    <div class="pipe-node">Need</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Build</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Ship</div>
+                                </div>
+                                <div class="project-icon">📖</div>
+                                <span class="project-tag">Web App • UX</span>
+                                <h3>Daily Reading App</h3>
+                                <p>A clean, modern web app that solves a UX problem I personally experienced. Built with simplicity and daily usability in mind.</p>
+                            </div>
+                            <div class="project-card-back">
+                                <div>
+                                    <h4>Tech Stack</h4>
+                                    <div class="back-stack">
+                                        <span>HTML/CSS</span><span>JavaScript</span><span>APIs</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>What I learned</h4>
+                                    <p>Designing for daily habit formation means ruthlessly removing friction — every extra tap kills retention.</p>
+                                </div>
+                                <a href="https://bible.seansnodgrass.com" target="_blank" class="back-link">View project</a>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="project-card">
-                        <div class="project-icon">🎨</div>
-                        <span class="project-tag">Portfolio</span>
-                        <h3>Creative Work</h3>
-                        <p>
-                            A collection of my design and creative projects. Showcasing my approach 
-                            to visual problem-solving and aesthetic exploration.
-                        </p>
-                        <a href="https://seansnodgrass.myportfolio.com" target="_blank" class="project-link">
-                            View Portfolio
-                        </a>
+                    <!-- Creative Work -->
+                    <div class="project-card-wrapper">
+                        <div class="project-card-inner">
+                            <div class="project-card-front">
+                                <div class="pipeline-mini">
+                                    <div class="pipe-node">Idea</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Design</div>
+                                    <div class="pipe-arrow"></div>
+                                    <div class="pipe-node">Craft</div>
+                                </div>
+                                <div class="project-icon">🎨</div>
+                                <span class="project-tag">Portfolio</span>
+                                <h3>Creative Work</h3>
+                                <p>A collection of my design and creative projects. Showcasing my approach to visual problem-solving and aesthetic exploration.</p>
+                            </div>
+                            <div class="project-card-back">
+                                <div>
+                                    <h4>Disciplines</h4>
+                                    <div class="back-stack">
+                                        <span>UI Design</span><span>Typography</span><span>Branding</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4>Philosophy</h4>
+                                    <p>Good design is invisible. Great design makes you feel something without knowing why.</p>
+                                </div>
+                                <a href="https://seansnodgrass.myportfolio.com" target="_blank" class="back-link">View portfolio</a>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </section>
 
@@ -728,52 +1254,362 @@
     </div>
 
     <script>
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+    // ═══════════════════════════════════════════════
+    // 1. TIME-AWARE HERO TAG
+    // ═══════════════════════════════════════════════
+    (function() {
+        const hour = new Date().getHours();
+        const tag = document.getElementById('hero-tag');
+        if (hour >= 5 && hour < 9) {
+            tag.textContent = 'COFFEE-FUELED ANALYTICS ENGINEER';
+        } else if (hour >= 21 || hour < 2) {
+            tag.textContent = 'BOURBON-ADJACENT ANALYTICS ENGINEER';
+        } else if (hour >= 2 && hour < 5) {
+            tag.textContent = 'WHY ARE YOU AWAKE · ANALYTICS ENGINEER';
+        } else {
+            tag.textContent = 'ANALYTICS ENGINEER';
+        }
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 2. SQL INTRO ANIMATION
+    // ═══════════════════════════════════════════════
+    (function() {
+        const body = document.getElementById('sql-body');
+        const results = document.getElementById('sql-results');
+        const overlay = document.getElementById('sql-intro');
+        const skipBtn = document.getElementById('sql-skip-btn');
+        let cancelled = false;
+        let timeouts = [];
+
+        const lines = [
+            { text: '-- loading profile...', cls: 'sql-cmt' },
+            { text: '', cls: '' },
+            { text: 'SELECT', cls: 'sql-kw', inline: true },
+            { text: ' name, role, vibe, status', cls: 'sql-out', inline: true, newline: true },
+            { text: 'FROM', cls: 'sql-kw', inline: true },
+            { text: ' engineers', cls: 'sql-out', inline: true, newline: true },
+            { text: 'WHERE', cls: 'sql-kw', inline: true },
+            { text: ' quirks ', cls: 'sql-out', inline: true },
+            { text: 'INCLUDES', cls: 'sql-fn', inline: true },
+            { text: " 'roller_coasters'", cls: 'sql-str', inline: true, newline: true },
+            { text: '  AND', cls: 'sql-kw', inline: true },
+            { text: ' bourbon_iq ', cls: 'sql-out', inline: true },
+            { text: '>', cls: 'sql-kw', inline: true },
+            { text: ' 90;', cls: 'sql-num', inline: true, newline: true },
+        ];
+
+        let currentLine = null;
+
+        function appendChar(text, cls, resolve) {
+            if (cancelled) { resolve(); return; }
+            if (!text.length) { resolve(); return; }
+
+            const cursor = body.querySelector('.sql-cursor');
+            if (cursor) cursor.remove();
+
+            const span = document.createElement('span');
+            span.className = cls;
+            if (!currentLine || !span.getAttribute('data-inline')) {
+                // handled by caller
+            }
+            span.textContent = text[0];
+            currentLine.appendChild(span);
+
+            // blinking cursor at end
+            const cur = document.createElement('span');
+            cur.className = 'sql-cursor';
+            currentLine.appendChild(cur);
+
+            const t = setTimeout(() => appendChar(text.slice(1), cls, resolve), 28 + Math.random() * 22);
+            timeouts.push(t);
+        }
+
+        function typeLine(text, cls) {
+            return new Promise(resolve => {
+                if (cancelled) { resolve(); return; }
+                appendChar(text, cls, resolve);
+            });
+        }
+
+        async function runIntro() {
+            const prompt = document.createElement('div');
+            prompt.innerHTML = '<span class="sql-prompt">snowflake&gt; </span>';
+            currentLine = prompt;
+            body.appendChild(prompt);
+
+            // add blinking cursor at start
+            const startCur = document.createElement('span');
+            startCur.className = 'sql-cursor';
+            prompt.appendChild(startCur);
+
+            await delay(400);
+            if (cancelled) return finish();
+
+            for (const item of lines) {
+                if (cancelled) return finish();
+                if (!item.text && !item.inline) {
+                    // blank line
+                    const br = document.createElement('div');
+                    br.innerHTML = '&nbsp;';
+                    body.appendChild(br);
+                    currentLine = br;
+                    await delay(80);
+                    continue;
+                }
+                if (!item.inline) {
+                    const div = document.createElement('div');
+                    body.appendChild(div);
+                    currentLine = div;
+                }
+                await typeLine(item.text, item.cls);
+                if (item.newline) {
+                    const div = document.createElement('div');
+                    div.innerHTML = '&nbsp;&nbsp;';
+                    body.appendChild(div);
+                    currentLine = div;
+                    await delay(60);
+                }
+            }
+
+            if (cancelled) return finish();
+            await delay(350);
+
+            // remove cursor
+            const cur = body.querySelector('.sql-cursor');
+            if (cur) cur.remove();
+
+            // show results
+            results.style.display = 'block';
+            results.style.opacity = 0;
+            results.style.transition = 'opacity 0.5s ease';
+            await delay(50);
+            results.style.opacity = 1;
+            await delay(1400);
+            finish();
+        }
+
+        function delay(ms) {
+            return new Promise(resolve => {
+                if (cancelled) { resolve(); return; }
+                const t = setTimeout(resolve, ms);
+                timeouts.push(t);
+            });
+        }
+
+        function finish() {
+            cancelled = true;
+            timeouts.forEach(clearTimeout);
+            overlay.classList.add('fade-out');
+            setTimeout(() => { overlay.style.display = 'none'; }, 750);
+        }
+
+        function skip() {
+            if (!cancelled) finish();
+        }
+
+        skipBtn.addEventListener('click', skip);
+        document.addEventListener('keydown', skip, { once: true });
+        overlay.addEventListener('click', skip);
+
+        runIntro();
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 3. TYPEWRITER ON HERO H1
+    // ═══════════════════════════════════════════════
+    (function() {
+        const el = document.getElementById('hero-h1');
+        const text = 'Building intelligent data solutions';
+        let i = 0;
+        // Start after SQL intro fades (~3.5s) — but also runs if intro skipped
+        // We use a polling approach: start when overlay is gone
+        function startWhenReady() {
+            const overlay = document.getElementById('sql-intro');
+            if (overlay && overlay.style.display !== 'none' && !overlay.classList.contains('fade-out')) {
+                setTimeout(startWhenReady, 200);
+                return;
+            }
+            typeNext();
+        }
+
+        function typeNext() {
+            if (i <= text.length) {
+                // Use a zero-width space trick to keep gradient text-clip working
+                el.setAttribute('data-text', text.slice(0, i));
+                el.textContent = text.slice(0, i) + (i < text.length ? '\u258c' : '');
+                i++;
+                setTimeout(typeNext, i === 1 ? 500 : 45 + Math.random() * 30);
+            }
+        }
+        startWhenReady();
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 4. ETL SCROLL PROGRESS BAR
+    // ═══════════════════════════════════════════════
+    (function() {
+        const stages = [
+            { el: document.getElementById('etl-extract'),  conn: document.getElementById('conn-1'), threshold: 0 },
+            { el: document.getElementById('etl-transform'), conn: document.getElementById('conn-2'), threshold: 0.28 },
+            { el: document.getElementById('etl-load'),      conn: document.getElementById('conn-3'), threshold: 0.60 },
+            { el: document.getElementById('etl-deliver'),   conn: null,                              threshold: 0.88 },
+        ];
+        const pct = document.getElementById('etl-percent');
+
+        function updateETL() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? Math.min(scrollTop / docHeight, 1) : 0;
+
+            pct.textContent = Math.round(progress * 100) + '%';
+
+            stages.forEach((stage, idx) => {
+                const isDone = progress >= (stages[idx + 1] ? stages[idx + 1].threshold : 1);
+                const isActive = progress >= stage.threshold && !isDone;
+
+                stage.el.classList.toggle('active', isActive);
+                stage.el.classList.toggle('done', isDone);
+
+                if (stage.conn) {
+                    const nextThreshold = stages[idx + 1].threshold;
+                    const fillPct = progress <= stage.threshold ? 0
+                        : progress >= nextThreshold ? 100
+                        : ((progress - stage.threshold) / (nextThreshold - stage.threshold)) * 100;
+                    stage.conn.style.width = fillPct + '%';
                 }
             });
+        }
+
+        window.addEventListener('scroll', updateETL, { passive: true });
+        updateETL();
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 5. CUSTOM CURSOR
+    // ═══════════════════════════════════════════════
+    (function() {
+        const cursor = document.getElementById('custom-cursor');
+        const trail = document.getElementById('cursor-trail');
+        let tx = -100, ty = -100;
+        let trailX = -100, trailY = -100;
+
+        document.addEventListener('mousemove', e => {
+            tx = e.clientX;
+            ty = e.clientY;
+            cursor.style.left = tx + 'px';
+            cursor.style.top  = ty + 'px';
         });
 
-        // Active nav state
-        const sections = document.querySelectorAll('section[id]');
-        const navLinks = document.querySelectorAll('nav a');
+        // Smooth trail
+        function animateTrail() {
+            trailX += (tx - trailX) * 0.15;
+            trailY += (ty - trailY) * 0.15;
+            trail.style.left = trailX + 'px';
+            trail.style.top  = trailY + 'px';
+            requestAnimationFrame(animateTrail);
+        }
+        animateTrail();
 
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
+        // Scale cursor on hover over interactive elements
+        document.querySelectorAll('a, button, .project-card-wrapper, .stat-card, .skill-tag').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 6. KONAMI CODE EASTER EGG
+    // ═══════════════════════════════════════════════
+    (function() {
+        const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let pos = 0;
+        const track = document.getElementById('coaster-track');
+        const car   = document.getElementById('coaster-car');
+        const toast = document.getElementById('konami-toast');
+        let running = false;
+
+        document.addEventListener('keydown', e => {
+            if (e.key === code[pos]) {
+                pos++;
+                if (pos === code.length) {
+                    pos = 0;
+                    if (!running) triggerCoaster();
                 }
-            });
-
-            navLinks.forEach(link => {
-                link.style.color = '';
-                if (link.getAttribute('href').slice(1) === current) {
-                    link.style.color = 'var(--primary)';
-                }
-            });
+            } else {
+                pos = e.key === code[0] ? 1 : 0;
+            }
         });
 
-        // Parallax effect for orbs
-        document.addEventListener('mousemove', (e) => {
-            const orbs = document.querySelectorAll('.orb');
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
-            
-            orbs.forEach((orb, index) => {
-                const speed = (index + 1) * 20;
-                orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
-            });
+        function triggerCoaster() {
+            running = true;
+            track.style.display = 'block';
+
+            // Reset animation
+            car.style.animation = 'none';
+            car.offsetHeight; // reflow
+            car.style.animation = '';
+
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                track.style.display = 'none';
+                toast.classList.remove('show');
+                running = false;
+            }, 3800);
+        }
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 7. SMOOTH SCROLLING
+    // ═══════════════════════════════════════════════
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
         });
+    });
+
+    // ═══════════════════════════════════════════════
+    // 8. ACTIVE NAV STATE
+    // ═══════════════════════════════════════════════
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            if (scrollY >= (section.offsetTop - 200)) {
+                current = section.getAttribute('id');
+            }
+        });
+        navLinks.forEach(link => {
+            link.style.color = '';
+            if (link.getAttribute('href').slice(1) === current) {
+                link.style.color = 'var(--primary)';
+            }
+        });
+    }, { passive: true });
+
+    // ═══════════════════════════════════════════════
+    // 9. PARALLAX ORBS
+    // ═══════════════════════════════════════════════
+    document.addEventListener('mousemove', e => {
+        const orbs = document.querySelectorAll('.orb');
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        orbs.forEach((orb, index) => {
+            const speed = (index + 1) * 20;
+            orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+        });
+    });
     </script>
 </body>
 </html>

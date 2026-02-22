@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Name Style Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A84FF;
+            --secondary: #5E5CE6;
+            --bg: #0A0E27;
+            --bg-card: #12162E;
+            --text: #E8EAED;
+            --text-dim: #9BA1A6;
+            --border: #1E2642;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #070a1c;
+            color: var(--text);
+            padding: 3rem 2rem;
+        }
+        h1 {
+            text-align: center;
+            font-size: 1rem;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        .option-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .option-label {
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        /* Each preview is a self-contained mini-site mockup */
+        .preview {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+        .preview::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.2;
+            pointer-events: none;
+        }
+        /* Orbs */
+        .preview-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.25;
+            pointer-events: none;
+        }
+        .preview-orb-1 {
+            top: -40px; right: -20px;
+            width: 200px; height: 200px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+        }
+        .preview-orb-2 {
+            bottom: -40px; left: -20px;
+            width: 160px; height: 160px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+        }
+
+        /* Shared nav */
+        .p-nav {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .p-logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .p-nav-links {
+            display: flex;
+            gap: 1.2rem;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+        }
+
+        /* Shared hero area */
+        .p-hero {
+            position: relative;
+            z-index: 1;
+            padding: 2rem 1.75rem 2.5rem;
+        }
+        .p-tag {
+            display: inline-block;
+            padding: 0.3rem 0.75rem;
+            background: rgba(10,132,255,0.1);
+            border: 1px solid rgba(10,132,255,0.3);
+            border-radius: 20px;
+            color: var(--primary);
+            font-size: 0.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .p-h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 0.6rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .p-name-headline {
+            /* Option 1: name IS the h1 */
+            font-size: 2.2rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .p-subtitle-from-h1 {
+            /* Option 1: old h1 becomes subtitle */
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            margin-bottom: 0.6rem;
+        }
+        .p-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            font-weight: 300;
+            margin-bottom: 0.6rem;
+        }
+        .p-desc {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+            max-width: 340px;
+        }
+        .p-btns {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .p-btn-primary {
+            padding: 0.45rem 1rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .p-btn-secondary {
+            padding: 0.45rem 1rem;
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        /* Option 2: expanded logo */
+        .p-logo-full {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .p-logo-full .lo-sean { color: var(--primary); }
+        .p-logo-full .lo-last { color: var(--text); }
+        .p-logo-full .lo-bracket { color: var(--primary); }
+
+        /* Option 3: name above tag */
+        .p-name-above {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* Highlight ring on hover */
+        .option-wrapper:hover .preview {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary), 0 20px 40px rgba(10,132,255,0.15);
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 900px) {
+            .options { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <h1>— Choose your name style —</h1>
+
+    <div class="options">
+
+        <!-- OPTION 1: Name as hero headline -->
+        <div class="option-wrapper">
+            <div class="option-label">Option 1 · Hero Headline</div>
+            <div class="preview">
+                <div class="preview-orb preview-orb-1"></div>
+                <div class="preview-orb preview-orb-2"></div>
+                <div class="p-nav">
+                    <div class="p-logo">&lt;Sean/&gt;</div>
+                    <div class="p-nav-links">
+                        <span>Home</span><span>Projects</span><span>Skills</span><span>Contact</span>
+                    </div>
+                </div>
+                <div class="p-hero">
+                    <div class="p-tag">ANALYTICS ENGINEER</div>
+                    <div class="p-name-headline">Sean Snodgrass</div>
+                    <div class="p-subtitle-from-h1">Building intelligent data solutions</div>
+                    <div class="p-subtitle">ETL pipelines, process optimization, and AI-powered analytics</div>
+                    <div class="p-desc">I'm Sean, an analytics engineer who loves turning messy data into actionable insights. Currently building AI agents in Snowflake.</div>
+                    <div class="p-btns">
+                        <div class="p-btn-primary">View My Work</div>
+                        <div class="p-btn-secondary">Get in Touch</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPTION 2: Expanded logo -->
+        <div class="option-wrapper">
+            <div class="option-label">Option 2 · Expanded Logo</div>
+            <div class="preview">
+                <div class="preview-orb preview-orb-1"></div>
+                <div class="preview-orb preview-orb-2"></div>
+                <div class="p-nav">
+                    <div class="p-logo-full">
+                        <span class="lo-bracket">&lt;</span><span class="lo-sean">Sean</span> <span class="lo-last">Snodgrass</span><span class="lo-bracket">/&gt;</span>
+                    </div>
+                    <div class="p-nav-links">
+                        <span>Home</span><span>Projects</span><span>Skills</span><span>Contact</span>
+                    </div>
+                </div>
+                <div class="p-hero">
+                    <div class="p-tag">ANALYTICS ENGINEER</div>
+                    <div class="p-h1">Building intelligent<br>data solutions</div>
+                    <div class="p-subtitle">ETL pipelines, process optimization, and AI-powered analytics</div>
+                    <div class="p-desc">I'm Sean, an analytics engineer who loves turning messy data into actionable insights. Currently building AI agents in Snowflake.</div>
+                    <div class="p-btns">
+                        <div class="p-btn-primary">View My Work</div>
+                        <div class="p-btn-secondary">Get in Touch</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPTION 3: Name above the tag -->
+        <div class="option-wrapper">
+            <div class="option-label">Option 3 · Name Above Tag</div>
+            <div class="preview">
+                <div class="preview-orb preview-orb-1"></div>
+                <div class="preview-orb preview-orb-2"></div>
+                <div class="p-nav">
+                    <div class="p-logo">&lt;Sean/&gt;</div>
+                    <div class="p-nav-links">
+                        <span>Home</span><span>Projects</span><span>Skills</span><span>Contact</span>
+                    </div>
+                </div>
+                <div class="p-hero">
+                    <div class="p-name-above">Sean Snodgrass</div>
+                    <div class="p-tag">ANALYTICS ENGINEER</div>
+                    <div class="p-h1">Building intelligent<br>data solutions</div>
+                    <div class="p-subtitle">ETL pipelines, process optimization, and AI-powered analytics</div>
+                    <div class="p-desc">I'm Sean, an analytics engineer who loves turning messy data into actionable insights. Currently building AI agents in Snowflake.</div>
+                    <div class="p-btns">
+                        <div class="p-btn-primary">View My Work</div>
+                        <div class="p-btn-secondary">Get in Touch</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

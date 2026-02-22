@@ -326,9 +326,18 @@
             font-family: 'JetBrains Mono', monospace;
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--primary);
             letter-spacing: -0.02em;
+            opacity: 0;
+            transform: translateY(-5px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
+        .logo.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .logo-bracket { color: var(--primary); }
+        .logo-first   { color: var(--primary); }
+        .logo-last    { color: var(--text); }
 
         nav ul {
             display: flex;
@@ -393,12 +402,19 @@
             font-size: clamp(2.5rem, 7vw, 4.5rem);
             font-weight: 700;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.75rem;
             background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             min-height: 1.1em; /* prevent jump during typewriter */
+        }
+
+        .hero-tagline {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
         }
 
         .hero .subtitle {
@@ -1038,7 +1054,7 @@
 
     <div class="container">
         <header>
-            <div class="logo">&lt;Sean/&gt;</div>
+            <div class="logo" id="site-logo"><span class="logo-bracket">&lt;</span><span class="logo-first">Sean</span> <span class="logo-last">Snodgrass</span><span class="logo-bracket">/&gt;</span></div>
             <nav>
                 <ul>
                     <li><a href="#home">Home</a></li>
@@ -1054,6 +1070,7 @@
                 <div class="hero-content">
                     <span class="hero-tag" id="hero-tag">ANALYTICS ENGINEER</span>
                     <h1 id="hero-h1"></h1>
+                    <p class="hero-tagline">Building intelligent data solutions</p>
                     <p class="subtitle">ETL pipelines, process optimization, and AI-powered analytics</p>
                     <p class="description">
                         I'm Sean, an analytics engineer who loves turning messy data into actionable insights.
@@ -1416,14 +1433,13 @@
     })();
 
     // ═══════════════════════════════════════════════
-    // 3. TYPEWRITER ON HERO H1
+    // 3. TYPEWRITER ON HERO H1 (types your name)
     // ═══════════════════════════════════════════════
     (function() {
         const el = document.getElementById('hero-h1');
-        const text = 'Building intelligent data solutions';
+        const text = 'Sean Snodgrass';
         let i = 0;
-        // Start after SQL intro fades (~3.5s) — but also runs if intro skipped
-        // We use a polling approach: start when overlay is gone
+
         function startWhenReady() {
             const overlay = document.getElementById('sql-intro');
             if (overlay && overlay.style.display !== 'none' && !overlay.classList.contains('fade-out')) {
@@ -1435,14 +1451,34 @@
 
         function typeNext() {
             if (i <= text.length) {
-                // Use a zero-width space trick to keep gradient text-clip working
-                el.setAttribute('data-text', text.slice(0, i));
                 el.textContent = text.slice(0, i) + (i < text.length ? '\u258c' : '');
                 i++;
-                setTimeout(typeNext, i === 1 ? 500 : 45 + Math.random() * 30);
+                setTimeout(typeNext, i === 1 ? 500 : 60 + Math.random() * 40);
             }
         }
         startWhenReady();
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 3b. SCROLL-BASED LOGO REVEAL
+    // ═══════════════════════════════════════════════
+    (function() {
+        const logo  = document.getElementById('site-logo');
+        const heroH1 = document.getElementById('hero-h1');
+
+        function updateLogo() {
+            const rect = heroH1.getBoundingClientRect();
+            // Start fading in when the bottom of the name reaches 80px from top,
+            // fully visible once it's 20px past that point.
+            const progress = Math.max(0, Math.min(1, (80 - rect.bottom) / 40));
+            logo.style.opacity = progress;
+            logo.style.transform = `translateY(${(1 - progress) * -6}px)`;
+            // Keep .visible in sync for CSS fallback
+            logo.classList.toggle('visible', progress >= 1);
+        }
+
+        window.addEventListener('scroll', updateLogo, { passive: true });
+        updateLogo();
     })();
 
     // ═══════════════════════════════════════════════

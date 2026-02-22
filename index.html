@@ -1557,13 +1557,13 @@
             });
         });
 
-        // ── Roller Coaster Track Canvas Trail ──
+        // ── Intamin-Style Roller Coaster Track Canvas Trail ──
         const canvas = document.getElementById('track-canvas');
         const ctx    = canvas.getContext('2d');
         const points = []; // { x, y, t }
-        const TRAIL_MS   = 250;  // fade duration
-        const RAIL_GAP   = 4;    // px between each rail and center line
-        const TIE_STEP   = 12;   // px between cross ties
+        const TRAIL_MS   = 250;  // fade duration ms
+        const RAIL       = 7;    // px from path centre to each running rail
+        const TIE_STEP   = 13;   // px between cross-tie bars
 
         function resize() {
             canvas.width  = window.innerWidth;
@@ -1576,91 +1576,134 @@
             points.push({ x: e.clientX, y: e.clientY, t: performance.now() });
         }, { passive: true });
 
+        // Draw a single tubular line segment: shadow → body → highlight
+        function tube(x0, y0, x1, y1, alpha, r, colBody, colHighlight) {
+            ctx.lineCap  = 'round';
+            ctx.lineJoin = 'round';
+            // Shadow / base
+            ctx.strokeStyle = `rgba(18, 30, 50, ${alpha})`;
+            ctx.lineWidth   = r * 2 + 1.5;
+            ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+            // Body
+            ctx.strokeStyle = colBody(alpha);
+            ctx.lineWidth   = r * 2 - 0.5;
+            ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+            // Highlight (upper-left offset → tube roundness illusion)
+            ctx.strokeStyle = colHighlight(alpha);
+            ctx.lineWidth   = r * 0.55;
+            ctx.beginPath();
+            ctx.moveTo(x0 - 0.6, y0 - 0.6);
+            ctx.lineTo(x1 - 0.6, y1 - 0.6);
+            ctx.stroke();
+        }
+
         function drawTrack() {
             const now = performance.now();
-
-            // Cull expired points
             while (points.length && now - points[0].t > TRAIL_MS) points.shift();
-
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
             if (points.length < 2) { requestAnimationFrame(drawTrack); return; }
 
-            // ── Rails ──
-            for (let rail = -1; rail <= 1; rail += 2) {        // left rail -1, right rail +1
-                ctx.beginPath();
-                for (let i = 0; i < points.length; i++) {
-                    const p  = points[i];
-                    const age = (now - p.t) / TRAIL_MS;         // 0=fresh → 1=old
+            // ── Pre-compute segment data ──
+            const segs = [];
+            for (let i = 1; i < points.length; i++) {
+                const p0 = points[i - 1], p1 = points[i];
+                const dx = p1.x - p0.x, dy = p1.y - p0.y;
+                const len = Math.hypot(dx, dy);
+                if (len < 0.5) continue;
+                const ux = dx / len, uy = dy / len;
+                segs.push({
+                    x0: p0.x, y0: p0.y, x1: p1.x, y1: p1.y,
+                    ux, uy,
+                    nx: -uy, ny: ux,   // perpendicular (left of travel)
+                    len,
+                    age0: (now - p0.t) / TRAIL_MS,  // age at start of seg
+                });
+            }
+            if (!segs.length) { requestAnimationFrame(drawTrack); return; }
 
-                    // perpendicular direction from previous segment
-                    let nx = 0, ny = 0;
-                    if (i < points.length - 1) {
-                        const dx = points[i + 1].x - p.x;
-                        const dy = points[i + 1].y - p.y;
-                        const len = Math.sqrt(dx * dx + dy * dy) || 1;
-                        nx = -dy / len;
-                        ny =  dx / len;
-                    } else {
-                        // reuse last segment direction
-                        const dx = p.x - points[i - 1].x;
-                        const dy = p.y - points[i - 1].y;
-                        const len = Math.sqrt(dx * dx + dy * dy) || 1;
-                        nx = -dy / len;
-                        ny =  dx / len;
-                    }
-
-                    const rx = p.x + nx * RAIL_GAP * rail;
-                    const ry = p.y + ny * RAIL_GAP * rail;
-
-                    if (i === 0) {
-                        ctx.moveTo(rx, ry);
-                    } else {
-                        ctx.lineTo(rx, ry);
-                    }
+            // ── Collect tie-bar positions ──
+            const ties = [];
+            let cumDist = 0, nextTie = TIE_STEP * 0.4;
+            for (const s of segs) {
+                let d = nextTie - cumDist;
+                while (d <= s.len) {
+                    const frac  = d / s.len;
+                    const alpha = Math.max(0, 1 - (s.age0 + frac * ((now - s.x1) / TRAIL_MS - s.age0)));
+                    // simple age interpolation along segment
+                    const ageHere = s.age0 + frac * (1 - s.age0); // approx
+                    ties.push({
+                        cx: s.x0 + s.ux * d,
+                        cy: s.y0 + s.uy * d,
+                        nx: s.nx, ny: s.ny,
+                        alpha: Math.max(0, 1 - ageHere),
+                    });
+                    nextTie += TIE_STEP;
+                    d = nextTie - cumDist;
                 }
-                ctx.strokeStyle = 'rgba(100, 170, 230, 0.65)';
-                ctx.lineWidth   = 1.5;
-                ctx.lineCap     = 'round';
-                ctx.lineJoin    = 'round';
-                ctx.stroke();
+                cumDist += s.len;
             }
 
-            // ── Cross Ties ──
-            let dist = 0;
-            let nextTie = TIE_STEP / 2;    // offset first tie so it feels natural
+            // ── 1. X-brace diagonals between consecutive ties (drawn first, behind rails) ──
+            ctx.lineCap = 'butt';
+            for (let i = 0; i + 1 < ties.length; i++) {
+                const a = ties[i], b = ties[i + 1];
+                const al = Math.min(a.alpha, b.alpha);
+                if (al <= 0.02) continue;
 
-            for (let i = 1; i < points.length; i++) {
-                const p0  = points[i - 1];
-                const p1  = points[i];
-                const age = (now - p0.t) / TRAIL_MS;
-                const alpha = (1 - age) * 0.45;
+                // Four corners of this track panel
+                const alx = a.cx + a.nx * RAIL, aly = a.cy + a.ny * RAIL;
+                const arx = a.cx - a.nx * RAIL, ary = a.cy - a.ny * RAIL;
+                const blx = b.cx + b.nx * RAIL, bly = b.cy + b.ny * RAIL;
+                const brx = b.cx - b.nx * RAIL, bry = b.cy - b.ny * RAIL;
 
-                const dx  = p1.x - p0.x;
-                const dy  = p1.y - p0.y;
-                const seg = Math.sqrt(dx * dx + dy * dy);
-                if (seg === 0) continue;
+                // Shadow pass for both diagonals
+                ctx.strokeStyle = `rgba(18, 30, 50, ${al * 0.7})`;
+                ctx.lineWidth   = 2.2;
+                ctx.beginPath(); ctx.moveTo(alx, aly); ctx.lineTo(brx, bry); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(arx, ary); ctx.lineTo(blx, bly); ctx.stroke();
 
-                const ux = dx / seg, uy = dy / seg;   // unit along path
-                const nx = -uy,      ny =  ux;         // perpendicular
+                // Body pass
+                ctx.strokeStyle = `rgba(85, 125, 165, ${al * 0.65})`;
+                ctx.lineWidth   = 1.4;
+                ctx.beginPath(); ctx.moveTo(alx, aly); ctx.lineTo(brx, bry); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(arx, ary); ctx.lineTo(blx, bly); ctx.stroke();
 
-                // Place ties that fall within this segment
-                let d = nextTie - dist;
-                while (d <= seg) {
-                    const cx = p0.x + ux * d;
-                    const cy = p0.y + uy * d;
+                // Subtle highlight
+                ctx.strokeStyle = `rgba(185, 215, 245, ${al * 0.2})`;
+                ctx.lineWidth   = 0.5;
+                ctx.beginPath(); ctx.moveTo(alx - 0.4, aly - 0.4); ctx.lineTo(brx - 0.4, bry - 0.4); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(arx - 0.4, ary - 0.4); ctx.lineTo(blx - 0.4, bly - 0.4); ctx.stroke();
+            }
 
-                    ctx.beginPath();
-                    ctx.moveTo(cx + nx * (RAIL_GAP + 2), cy + ny * (RAIL_GAP + 2));
-                    ctx.lineTo(cx - nx * (RAIL_GAP + 2), cy - ny * (RAIL_GAP + 2));
-                    ctx.strokeStyle = `rgba(80, 140, 200, ${alpha})`;
-                    ctx.lineWidth   = 1;
-                    ctx.stroke();
+            // ── 2. Cross tie bars (tubular, drawn above X-bracing) ──
+            for (const tie of ties) {
+                if (tie.alpha <= 0.02) continue;
+                const lx = tie.cx + tie.nx * (RAIL + 2);
+                const ly = tie.cy + tie.ny * (RAIL + 2);
+                const rx = tie.cx - tie.nx * (RAIL + 2);
+                const ry = tie.cy - tie.ny * (RAIL + 2);
+                tube(lx, ly, rx, ry, tie.alpha,
+                    1.4,
+                    a => `rgba(100, 140, 175, ${a * 0.85})`,
+                    a => `rgba(210, 230, 250, ${a * 0.45})`
+                );
+            }
 
-                    nextTie += TIE_STEP;
-                    d = nextTie - dist;
+            // ── 3. Running rails (tubular, drawn on top of everything) ──
+            for (const side of [1, -1]) {
+                for (const s of segs) {
+                    const al = Math.max(0, 1 - s.age0);
+                    if (al <= 0.02) continue;
+                    const x0 = s.x0 + s.nx * RAIL * side;
+                    const y0 = s.y0 + s.ny * RAIL * side;
+                    const x1 = s.x1 + s.nx * RAIL * side;
+                    const y1 = s.y1 + s.ny * RAIL * side;
+                    tube(x0, y0, x1, y1, al,
+                        2.2,
+                        a => `rgba(115, 155, 195, ${a})`,
+                        a => `rgba(225, 240, 255, ${a * 0.7})`
+                    );
                 }
-                dist += seg;
             }
 
             requestAnimationFrame(drawTrack);

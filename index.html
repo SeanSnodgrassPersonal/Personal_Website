@@ -1717,8 +1717,6 @@
     (function() {
         const code = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         let pos = 0;
-        const track = document.getElementById('coaster-track');
-        const car   = document.getElementById('coaster-car');
         const toast = document.getElementById('konami-toast');
         let running = false;
 
@@ -1736,20 +1734,12 @@
 
         function triggerCoaster() {
             running = true;
-            track.style.display = 'block';
-
-            // Reset animation
-            car.style.animation = 'none';
-            car.offsetHeight; // reflow
-            car.style.animation = '';
-
+            window.open('https://youtu.be/RTXTbzctl0c?t=47&si=mKmjcXd3PyPowm-5', '_blank');
             toast.classList.add('show');
-
             setTimeout(() => {
-                track.style.display = 'none';
                 toast.classList.remove('show');
                 running = false;
-            }, 3800);
+            }, 2500);
         }
     })();
 

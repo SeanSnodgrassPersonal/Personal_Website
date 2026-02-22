@@ -53,19 +53,14 @@
             line-height: 1;
             will-change: transform;
         }
-        #cursor-trail {
+        #track-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--primary);
+            width: 100%;
+            height: 100%;
             pointer-events: none;
-            z-index: 99998;
-            transform: translate(-50%, -50%);
-            opacity: 0.5;
-            transition: all 0.18s ease;
+            z-index: 99997;
         }
 
         /* ── ETL Progress Bar ── */
@@ -309,17 +304,30 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
-            padding-top: 36px; /* offset for ETL bar */
+            padding-top: 100px; /* ETL bar (36px) + fixed header (~64px) */
         }
 
-        /* Header */
-        header {
-            padding: 2rem 0;
+        /* ── Fixed Site Header ── */
+        #site-header {
+            position: fixed;
+            top: 36px; /* below ETL bar */
+            left: 0;
+            width: 100%;
+            z-index: 900;
+            background: rgba(10, 14, 39, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            opacity: 0;
+            animation: fadeInDown 0.8s ease 0.2s forwards;
+        }
+        .header-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.9rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0;
-            animation: fadeInDown 0.8s ease 0.2s forwards;
         }
 
         .logo {
@@ -923,11 +931,11 @@
         /* Mobile Responsive */
         @media (max-width: 768px) {
             body { cursor: auto; }
-            #custom-cursor, #cursor-trail { display: none; }
+            #custom-cursor, #track-canvas { display: none; }
 
-            header {
+            .header-inner {
                 flex-direction: column;
-                gap: 1.5rem;
+                gap: 1rem;
             }
 
             nav ul {
@@ -1039,7 +1047,7 @@
 
     <!-- ── Custom Cursor ── -->
     <div id="custom-cursor">🎢</div>
-    <div id="cursor-trail"></div>
+    <canvas id="track-canvas"></canvas>
 
     <!-- ── Konami Easter Egg ── -->
     <div id="coaster-track">
@@ -1052,8 +1060,8 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
-    <div class="container">
-        <header>
+    <header id="site-header">
+        <div class="header-inner">
             <div class="logo" id="site-logo"><span class="logo-bracket">&lt;</span><span class="logo-first">Sean</span> <span class="logo-last">Snodgrass</span><span class="logo-bracket">/&gt;</span></div>
             <nav>
                 <ul>
@@ -1063,8 +1071,10 @@
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
-        </header>
+        </div>
+    </header>
 
+    <div class="container">
         <main>
             <section id="home" class="hero">
                 <div class="hero-content">
@@ -1470,10 +1480,12 @@
             const rect = heroH1.getBoundingClientRect();
             // Start fading in when the bottom of the name reaches 80px from top,
             // fully visible once it's 20px past that point.
-            const progress = Math.max(0, Math.min(1, (80 - rect.bottom) / 40));
+                // header bottom = etl bar (36px) + fixed header height
+            const hdr = document.getElementById('site-header');
+            const headerBottom = 36 + (hdr ? hdr.offsetHeight : 64);
+            const progress = Math.max(0, Math.min(1, (headerBottom - rect.bottom) / 40));
             logo.style.opacity = progress;
             logo.style.transform = `translateY(${(1 - progress) * -6}px)`;
-            // Keep .visible in sync for CSS fallback
             logo.classList.toggle('visible', progress >= 1);
         }
 
@@ -1522,13 +1534,11 @@
     })();
 
     // ═══════════════════════════════════════════════
-    // 5. CUSTOM CURSOR
+    // 5. CUSTOM CURSOR + ROLLER COASTER TRACK TRAIL
     // ═══════════════════════════════════════════════
     (function() {
         const cursor = document.getElementById('custom-cursor');
-        const trail = document.getElementById('cursor-trail');
         let tx = -100, ty = -100;
-        let trailX = -100, trailY = -100;
 
         document.addEventListener('mousemove', e => {
             tx = e.clientX;
@@ -1536,16 +1546,6 @@
             cursor.style.left = tx + 'px';
             cursor.style.top  = ty + 'px';
         });
-
-        // Smooth trail
-        function animateTrail() {
-            trailX += (tx - trailX) * 0.15;
-            trailY += (ty - trailY) * 0.15;
-            trail.style.left = trailX + 'px';
-            trail.style.top  = trailY + 'px';
-            requestAnimationFrame(animateTrail);
-        }
-        animateTrail();
 
         // Scale cursor on hover over interactive elements
         document.querySelectorAll('a, button, .project-card-wrapper, .stat-card, .skill-tag').forEach(el => {
@@ -1556,6 +1556,116 @@
                 cursor.style.transform = 'translate(-50%, -50%) scale(1)';
             });
         });
+
+        // ── Roller Coaster Track Canvas Trail ──
+        const canvas = document.getElementById('track-canvas');
+        const ctx    = canvas.getContext('2d');
+        const points = []; // { x, y, t }
+        const TRAIL_MS   = 250;  // fade duration
+        const RAIL_GAP   = 4;    // px between each rail and center line
+        const TIE_STEP   = 12;   // px between cross ties
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        document.addEventListener('mousemove', e => {
+            points.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+        }, { passive: true });
+
+        function drawTrack() {
+            const now = performance.now();
+
+            // Cull expired points
+            while (points.length && now - points[0].t > TRAIL_MS) points.shift();
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (points.length < 2) { requestAnimationFrame(drawTrack); return; }
+
+            // ── Rails ──
+            for (let rail = -1; rail <= 1; rail += 2) {        // left rail -1, right rail +1
+                ctx.beginPath();
+                for (let i = 0; i < points.length; i++) {
+                    const p  = points[i];
+                    const age = (now - p.t) / TRAIL_MS;         // 0=fresh → 1=old
+
+                    // perpendicular direction from previous segment
+                    let nx = 0, ny = 0;
+                    if (i < points.length - 1) {
+                        const dx = points[i + 1].x - p.x;
+                        const dy = points[i + 1].y - p.y;
+                        const len = Math.sqrt(dx * dx + dy * dy) || 1;
+                        nx = -dy / len;
+                        ny =  dx / len;
+                    } else {
+                        // reuse last segment direction
+                        const dx = p.x - points[i - 1].x;
+                        const dy = p.y - points[i - 1].y;
+                        const len = Math.sqrt(dx * dx + dy * dy) || 1;
+                        nx = -dy / len;
+                        ny =  dx / len;
+                    }
+
+                    const rx = p.x + nx * RAIL_GAP * rail;
+                    const ry = p.y + ny * RAIL_GAP * rail;
+
+                    if (i === 0) {
+                        ctx.moveTo(rx, ry);
+                    } else {
+                        ctx.lineTo(rx, ry);
+                    }
+                }
+                ctx.strokeStyle = 'rgba(100, 170, 230, 0.65)';
+                ctx.lineWidth   = 1.5;
+                ctx.lineCap     = 'round';
+                ctx.lineJoin    = 'round';
+                ctx.stroke();
+            }
+
+            // ── Cross Ties ──
+            let dist = 0;
+            let nextTie = TIE_STEP / 2;    // offset first tie so it feels natural
+
+            for (let i = 1; i < points.length; i++) {
+                const p0  = points[i - 1];
+                const p1  = points[i];
+                const age = (now - p0.t) / TRAIL_MS;
+                const alpha = (1 - age) * 0.45;
+
+                const dx  = p1.x - p0.x;
+                const dy  = p1.y - p0.y;
+                const seg = Math.sqrt(dx * dx + dy * dy);
+                if (seg === 0) continue;
+
+                const ux = dx / seg, uy = dy / seg;   // unit along path
+                const nx = -uy,      ny =  ux;         // perpendicular
+
+                // Place ties that fall within this segment
+                let d = nextTie - dist;
+                while (d <= seg) {
+                    const cx = p0.x + ux * d;
+                    const cy = p0.y + uy * d;
+
+                    ctx.beginPath();
+                    ctx.moveTo(cx + nx * (RAIL_GAP + 2), cy + ny * (RAIL_GAP + 2));
+                    ctx.lineTo(cx - nx * (RAIL_GAP + 2), cy - ny * (RAIL_GAP + 2));
+                    ctx.strokeStyle = `rgba(80, 140, 200, ${alpha})`;
+                    ctx.lineWidth   = 1;
+                    ctx.stroke();
+
+                    nextTie += TIE_STEP;
+                    d = nextTie - dist;
+                }
+                dist += seg;
+            }
+
+            requestAnimationFrame(drawTrack);
+        }
+        drawTrack();
     })();
 
     // ═══════════════════════════════════════════════

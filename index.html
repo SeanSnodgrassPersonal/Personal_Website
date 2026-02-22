@@ -1577,113 +1577,111 @@
             ctx.beginPath(); ctx.moveTo(x0 - 0.7, y0 - 0.7); ctx.lineTo(x1 - 0.7, y1 - 0.7); ctx.stroke();
         }
 
-        // ── Draw the Intamin lead car at (x,y) facing `angle` ──
+        // ── Draw the Intamin lead car — SIDE PROFILE, nose tip at cursor ──
         function drawCar(x, y, angle) {
             ctx.save();
             ctx.translate(x, y);
-            ctx.rotate(angle);                  // nose points in direction of travel
+            ctx.rotate(angle);
             const s = isHovering ? 1.3 : 1.0;
             ctx.scale(s, s);
 
-            const NL = 23;  // nose half-length  (forward of centre)
-            const RL = 14;  // rear half-length   (behind centre)
-            const W  = 13;  // body half-width
+            // Shift so the NOSE TIP is at the cursor point (origin)
+            const NL = 22, RL = 16;  // nose / rear length from new origin
+            ctx.translate(-NL, 0);   // nose tip → cursor
+
+            // Vertical layout (local Y: negative = up on screen)
+            const yT = -9;   // roof line
+            const yB =  5;   // body floor
+            const yW = 10;   // wheel axle
+            const wR =  4;   // wheel radius
 
             // ── Drop shadow ──
-            ctx.shadowColor   = 'rgba(0,0,0,0.6)';
-            ctx.shadowBlur    = 10;
-            ctx.shadowOffsetX = 2.5;
-            ctx.shadowOffsetY = 3;
+            ctx.shadowColor = 'rgba(0,0,0,0.55)';
+            ctx.shadowBlur = 8; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
 
-            // ── Main body shell (navy) ──
+            // ── Main body shell ──
+            //   nose tip (NL,0) → roof → rear → floor → back to nose
             ctx.beginPath();
-            ctx.moveTo(NL + 5, 0);
-            ctx.quadraticCurveTo(NL,  -W * 0.25, NL * 0.45, -W);
-            ctx.lineTo(-RL,           -W * 0.75);
-            ctx.lineTo(-RL - 3,       0);
-            ctx.lineTo(-RL,            W * 0.75);
-            ctx.quadraticCurveTo(NL * 0.45, W, NL, W * 0.25);
+            ctx.moveTo(NL, 0);                                           // nose tip
+            ctx.quadraticCurveTo(NL * 0.8, yT - 1, NL * 0.05, yT);    // top of nose → roof
+            ctx.lineTo(-RL, yT + 2);                                    // roof → rear top
+            ctx.quadraticCurveTo(-RL - 2, 0, -RL, yB);                 // rear curve
+            ctx.lineTo(NL * 0.18, yB);                                  // floor
+            ctx.quadraticCurveTo(NL * 0.6, yB + 0.5, NL, 0);          // under-nose → tip
             ctx.closePath();
-            ctx.fillStyle = '#0c1950';
-            ctx.fill();
+            ctx.fillStyle = '#0c1950'; ctx.fill();
             ctx.shadowColor = 'transparent';
-            ctx.strokeStyle = '#1e3580';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            ctx.strokeStyle = '#243a85'; ctx.lineWidth = 0.8; ctx.stroke();
 
-            // ── Nose wedge (darker) ──
+            // ── Darker nose section ──
             ctx.beginPath();
-            ctx.moveTo(NL + 5, 0);
-            ctx.lineTo(NL * 0.5, -W * 0.95);
-            ctx.lineTo(NL * 0.5,  W * 0.95);
+            ctx.moveTo(NL, 0);
+            ctx.quadraticCurveTo(NL * 0.8, yT - 1, NL * 0.48, yT);
+            ctx.lineTo(NL * 0.48, yB - 0.5);
+            ctx.quadraticCurveTo(NL * 0.65, yB + 0.5, NL, 0);
             ctx.closePath();
-            ctx.fillStyle = '#070e30';
-            ctx.fill();
+            ctx.fillStyle = '#07103a'; ctx.fill();
 
-            // ── Centre nose stripe ──
-            ctx.beginPath();
-            ctx.moveTo(NL + 5, 0); ctx.lineTo(NL * 0.5, 0);
-            ctx.strokeStyle = '#2040a0'; ctx.lineWidth = 1.5; ctx.lineCap = 'round';
-            ctx.stroke();
+            // ── Wheel bogies (pillars from floor to axle) ──
+            ctx.fillStyle = '#141830';
+            [[NL * 0.15, 5.5], [-RL * 0.52, 5.5]].forEach(([bx, bw]) => {
+                ctx.beginPath(); ctx.rect(bx, yB - 0.5, 6, yW - yB + 1); ctx.fill();
+            });
 
-            // ── Seat positions [xOffset, yOffset] (car-local, +X = nose) ──
-            const seats = [
-                [ 9,  -5], [ 9,   5],   // front row
-                [-2,  -5], [-2,   5],   // rear row
-            ];
+            // ── Wheels ──
+            [[NL * 0.18, yW], [-RL * 0.48, yW]].forEach(([wx, wy]) => {
+                ctx.fillStyle = '#111525';
+                ctx.beginPath(); ctx.arc(wx, wy, wR, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#384068';
+                ctx.beginPath(); ctx.arc(wx, wy, wR * 0.58, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#5568a8';
+                ctx.beginPath(); ctx.arc(wx - 0.7, wy - 0.7, wR * 0.22, 0, Math.PI * 2); ctx.fill();
+            });
 
-            // ── Seat pads ──
-            for (const [sx, sy] of seats) {
-                ctx.fillStyle = '#1a2e90';
-                ctx.strokeStyle = '#2a44b8';
-                ctx.lineWidth = 0.5;
+            // ── Seat backs (2 visible from side) ──
+            // Front seat starts at x=5, rear at x=-6 (small gap between them)
+            const seatXs = [5, -6];
+            seatXs.forEach(sx => {
+                ctx.fillStyle = '#1a2e90'; ctx.strokeStyle = '#2a44b8'; ctx.lineWidth = 0.4;
+                ctx.beginPath(); ctx.rect(sx, yT + 2, 7, 9); ctx.fill(); ctx.stroke();
+                ctx.fillStyle = '#0e1b62';  // headrest area (darker)
+                ctx.beginPath(); ctx.rect(sx + 3, yT + 2, 4, 9); ctx.fill();
+            });
+
+            // ── Headrests (oval bumps above each seat along the roof) ──
+            seatXs.forEach(sx => {
+                ctx.fillStyle = '#0f1e6a';
                 ctx.beginPath();
-                ctx.rect(sx - 4.5, sy - 3.5, 9, 7);
-                ctx.fill(); ctx.stroke();
-                // headrest taper
-                ctx.fillStyle = '#0f1e68';
-                ctx.beginPath();
-                ctx.rect(sx + 1.5, sy - 3, 3, 6);
+                ctx.ellipse(sx + 3.5, yT - 1, 4, 2.5, 0, 0, Math.PI * 2);
                 ctx.fill();
-            }
+                ctx.strokeStyle = '#1a3090'; ctx.lineWidth = 0.5; ctx.stroke();
+            });
 
-            // ── Green T-bar OTSRs ──
-            ctx.strokeStyle = '#1dd455';
-            ctx.lineWidth = 2.5;
-            ctx.lineCap = 'round';
-            for (const [sx, sy] of seats) {
-                // Crossbar (horizontal across shoulders)
+            // ── Green OTSRs — ∩ arch with hanging arms (side view) ──
+            // ctx.arc(cx, cy, r, Math.PI, 0, false) = clockwise left→top→right = ∩
+            ctx.strokeStyle = '#1dd455'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+            seatXs.forEach(sx => {
+                const cx = sx + 3.5, cy = yT + 5, r = 5.5;
+                // Arch
                 ctx.beginPath();
-                ctx.moveTo(sx - 4, sy - 5.5);
-                ctx.lineTo(sx + 4, sy - 5.5);
+                ctx.arc(cx, cy, r, Math.PI, 0, false);
                 ctx.stroke();
-                // Left arm
+                // Left arm (hangs down from left end of arch)
                 ctx.beginPath();
-                ctx.moveTo(sx - 4, sy - 5.5);
-                ctx.lineTo(sx - 4, sy - 1);
+                ctx.moveTo(cx - r, cy); ctx.lineTo(cx - r, cy + 4);
                 ctx.stroke();
                 // Right arm
                 ctx.beginPath();
-                ctx.moveTo(sx + 4, sy - 5.5);
-                ctx.lineTo(sx + 4, sy - 1);
+                ctx.moveTo(cx + r, cy); ctx.lineTo(cx + r, cy + 4);
                 ctx.stroke();
-                // Short lap bar connector (vertical centre)
-                ctx.beginPath();
-                ctx.moveTo(sx, sy - 5.5);
-                ctx.lineTo(sx, sy - 1);
-                ctx.strokeStyle = '#18b045';
-                ctx.lineWidth = 1.2;
-                ctx.stroke();
-                ctx.strokeStyle = '#1dd455';
-                ctx.lineWidth = 2.5;
-            }
+            });
 
-            // ── Body highlight (specular sheen along top edge) ──
+            // ── Roof specular highlight ──
             ctx.beginPath();
-            ctx.moveTo(NL * 0.55, -W * 0.55);
-            ctx.quadraticCurveTo(-RL * 0.2, -W * 0.78, -RL * 0.7, -W * 0.6);
-            ctx.strokeStyle = 'rgba(140,175,240,0.38)';
-            ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+            ctx.moveTo(NL * 0.5, yT + 0.5);
+            ctx.quadraticCurveTo(0, yT - 0.5, -RL * 0.55, yT + 2);
+            ctx.strokeStyle = 'rgba(140,180,245,0.38)';
+            ctx.lineWidth = 1.8; ctx.lineCap = 'round';
             ctx.stroke();
 
             ctx.restore();

@@ -40,7 +40,15 @@
 
         /* ── Custom Cursor ── */
         #custom-cursor {
-            display: none; /* replaced by canvas car */
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.08s ease;
+            font-size: 20px;
+            line-height: 1;
+            will-change: transform;
         }
         #track-canvas {
             position: fixed;
@@ -1523,22 +1531,16 @@
     })();
 
     // ═══════════════════════════════════════════════
-    // 5. INTAMIN CAR CURSOR + 3-D PERSPECTIVE TRACK
+    // 5. EMOJI CURSOR + 3-D PERSPECTIVE TRACK
     // ═══════════════════════════════════════════════
     (function() {
-        // ── Intamin-Style Roller Coaster Track Canvas Trail ──
-        const canvas   = document.getElementById('track-canvas');
-        const ctx      = canvas.getContext('2d');
-        const points   = []; // { x, y, t }
+        const cursor = document.getElementById('custom-cursor');
+        const canvas = document.getElementById('track-canvas');
+        const ctx    = canvas.getContext('2d');
+        const points = []; // { x, y, t }
         const TRAIL_MS = 300;
         const TIE_STEP = 13;
-        const RAIL_MAX = 11;   // half-rail-gap at cursor (scales to ~2 at tail)
-
-        // Car state
-        let carX = -200, carY = -200;
-        let carAngle = 0;          // smoothed heading (radians, 0 = right)
-        let vx = 0, vy = 0;        // smoothed velocity for angle
-        let isHovering = false;
+        const RAIL_MAX = 11;
 
         function resize() {
             canvas.width  = window.innerWidth;
@@ -1548,19 +1550,14 @@
         window.addEventListener('resize', resize);
 
         document.addEventListener('mousemove', e => {
-            const dx = e.clientX - carX;
-            const dy = e.clientY - carY;
-            vx = vx * 0.5 + dx * 0.5;
-            vy = vy * 0.5 + dy * 0.5;
-            if (Math.hypot(vx, vy) > 0.5) carAngle = Math.atan2(vy, vx);
-            carX = e.clientX;
-            carY = e.clientY;
-            points.push({ x: carX, y: carY, t: performance.now() });
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top  = e.clientY + 'px';
+            points.push({ x: e.clientX, y: e.clientY, t: performance.now() });
         }, { passive: true });
 
         document.querySelectorAll('a, button, .project-card-wrapper, .stat-card, .skill-tag').forEach(el => {
-            el.addEventListener('mouseenter', () => { isHovering = true;  });
-            el.addEventListener('mouseleave', () => { isHovering = false; });
+            el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
+            el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)';   });
         });
 
         // ── Tubular stroke: shadow → body → upper-left highlight ──
@@ -1577,8 +1574,8 @@
             ctx.beginPath(); ctx.moveTo(x0 - 0.7, y0 - 0.7); ctx.lineTo(x1 - 0.7, y1 - 0.7); ctx.stroke();
         }
 
-        // ── Draw the Intamin lead car — SIDE PROFILE, nose tip at cursor ──
-        function drawCar(x, y, angle) {
+        // ── (car drawing removed — using emoji cursor instead) ──
+        function drawCar(x, y, angle) { return; // no-op
             ctx.save();
             ctx.translate(x, y);
             ctx.rotate(angle);
@@ -1779,9 +1776,6 @@
                     }
                 }
             }
-
-            // 4. Intamin car at cursor
-            drawCar(carX, carY, carAngle);
 
             requestAnimationFrame(drawTrack);
         }

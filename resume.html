@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume — Sean Snodgrass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A84FF;
+            --primary-dark: #0066CC;
+            --secondary: #5E5CE6;
+            --accent: #30D5C8;
+            --bg: #0A0E27;
+            --bg-card: #12162E;
+            --bg-hover: #1A1F3A;
+            --text: #E8EAED;
+            --text-dim: #9BA1A6;
+            --border: #1E2642;
+            --gradient-2: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
+            --sidebar-w: 220px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── Animated background ── */
+        .bg-grid {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: 0;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes gridMove {
+            0% { transform: translate(0,0); }
+            100% { transform: translate(50px,50px); }
+        }
+        .orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(80px); opacity: 0.2; z-index: 0;
+            pointer-events: none;
+        }
+        .orb-1 { top: -10%; right: 10%; width: 500px; height: 500px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%); }
+        .orb-2 { bottom: -10%; left: 10%; width: 400px; height: 400px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); }
+
+        /* ── Top bar ── */
+        #site-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 900;
+            background: rgba(10,14,39,0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            height: 56px;
+            display: flex; align-items: center;
+        }
+        .header-inner {
+            width: 100%; padding: 0 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem; font-weight: 600;
+            text-decoration: none; color: var(--text);
+        }
+        .logo-bracket { color: var(--primary); }
+        .logo-first   { color: var(--primary); }
+        .logo-back {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem; color: var(--text-dim);
+            text-decoration: none;
+            display: flex; align-items: center; gap: 0.5rem;
+            transition: color 0.2s;
+        }
+        .logo-back:hover { color: var(--primary); }
+        .logo-back::before { content: '←'; }
+
+        /* ── Layout shell ── */
+        .layout {
+            position: relative; z-index: 1;
+            display: flex;
+            min-height: 100vh;
+            padding-top: 56px;
+        }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            position: fixed;
+            top: 56px; left: 0;
+            width: var(--sidebar-w);
+            height: calc(100vh - 56px);
+            background: rgba(18,22,46,0.95);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 2rem 0 2rem;
+            z-index: 800;
+            overflow-y: auto;
+        }
+        .sidebar-profile {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+        .sidebar-name {
+            font-weight: 700; font-size: 0.95rem;
+            color: var(--text); margin-bottom: 0.2rem;
+        }
+        .sidebar-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .sidebar-status {
+            display: flex; align-items: center; gap: 0.4rem;
+            margin-top: 0.6rem;
+            font-size: 0.75rem; color: var(--text-dim);
+        }
+        .status-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+            animation: pulse 2s ease infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity: 1; } 50% { opacity: 0.5; }
+        }
+
+        .sidebar-nav { list-style: none; }
+        .sidebar-nav li a {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.65rem 1.5rem;
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.88rem; font-weight: 500;
+            transition: all 0.2s;
+            border-left: 2px solid transparent;
+        }
+        .sidebar-nav li a:hover {
+            color: var(--text);
+            background: rgba(10,132,255,0.06);
+        }
+        .sidebar-nav li a.active {
+            color: var(--primary);
+            border-left-color: var(--primary);
+            background: rgba(10,132,255,0.08);
+        }
+        .nav-icon {
+            font-size: 0.85rem; width: 18px; text-align: center;
+            font-style: normal;
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 1rem 1.5rem 0;
+            border-top: 1px solid var(--border);
+        }
+        .sidebar-footer a {
+            display: block; color: var(--text-dim);
+            text-decoration: none; font-size: 0.8rem;
+            padding: 0.3rem 0; transition: color 0.2s;
+        }
+        .sidebar-footer a:hover { color: var(--primary); }
+
+        /* ── Main content ── */
+        #main-content {
+            margin-left: var(--sidebar-w);
+            flex: 1;
+            padding: 2.5rem 3rem 6rem;
+            max-width: calc(100% - var(--sidebar-w));
+        }
+
+        /* ── Section base ── */
+        .resume-section {
+            display: none;
+            animation: fadeUp 0.4s ease forwards;
+        }
+        .resume-section.active { display: block; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        .section-title {
+            font-size: 2rem; font-weight: 700;
+            margin-bottom: 0.4rem;
+        }
+        .section-subtitle {
+            font-size: 1rem; color: var(--text-dim);
+            font-weight: 300; margin-bottom: 2.5rem;
+        }
+
+        /* ── CHATBOT ── */
+        #chat-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+        }
+        .chat-bar {
+            background: #161b22;
+            padding: 0.7rem 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            user-select: none;
+        }
+        .chat-bar-dots { display: flex; gap: 5px; }
+        .chat-dot { width: 11px; height: 11px; border-radius: 50%; }
+        .chat-dot.red   { background: #ff5f57; }
+        .chat-dot.yellow{ background: #febc2e; }
+        .chat-dot.green { background: #28c840; }
+        .chat-bar-title {
+            margin: 0 auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.73rem; color: var(--text-dim);
+        }
+        .chat-bar-toggle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem; color: var(--text-dim);
+            transition: color 0.2s;
+        }
+        .chat-bar:hover .chat-bar-toggle { color: var(--primary); }
+
+        #chat-body {
+            display: block;
+        }
+        #chat-body.collapsed { display: none; }
+
+        .chat-intro {
+            padding: 1.25rem 1.5rem 0.5rem;
+            display: flex; align-items: flex-start; gap: 0.75rem;
+        }
+        .chat-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--gradient-2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; flex-shrink: 0;
+        }
+        .chat-intro-text {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 4px 12px 12px 12px;
+            padding: 0.7rem 1rem;
+            font-size: 0.88rem; color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .chat-intro-text strong { color: var(--text); }
+
+        .chat-suggestions {
+            padding: 0.5rem 1.5rem 1rem 1.5rem;
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+            padding-left: calc(1.5rem + 36px + 0.75rem);
+        }
+        .suggest-chip {
+            padding: 0.3rem 0.85rem;
+            background: rgba(10,132,255,0.08);
+            border: 1px solid rgba(10,132,255,0.25);
+            border-radius: 20px;
+            font-size: 0.78rem; color: var(--primary);
+            cursor: pointer; transition: all 0.2s;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .suggest-chip:hover {
+            background: rgba(10,132,255,0.18);
+            border-color: var(--primary);
+        }
+
+        #chat-messages {
+            padding: 0 1.5rem;
+            max-height: 340px;
+            overflow-y: auto;
+            display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .chat-msg {
+            display: flex; gap: 0.75rem; align-items: flex-start;
+        }
+        .chat-msg.user { flex-direction: row-reverse; }
+        .chat-msg-avatar {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; flex-shrink: 0;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-dim);
+        }
+        .chat-msg.user .chat-msg-avatar {
+            background: rgba(10,132,255,0.15);
+            border-color: rgba(10,132,255,0.3);
+            color: var(--primary);
+        }
+        .chat-bubble {
+            max-width: 75%;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 4px 12px 12px 12px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.87rem; color: var(--text-dim);
+            line-height: 1.6;
+        }
+        .chat-msg.user .chat-bubble {
+            border-radius: 12px 4px 12px 12px;
+            background: rgba(10,132,255,0.1);
+            border-color: rgba(10,132,255,0.25);
+            color: var(--text);
+        }
+        .chat-bubble.thinking {
+            display: flex; align-items: center; gap: 4px;
+        }
+        .think-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--text-dim);
+            animation: thinkBounce 1.2s ease infinite;
+        }
+        .think-dot:nth-child(2) { animation-delay: 0.2s; }
+        .think-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes thinkBounce {
+            0%,60%,100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        .chat-input-row {
+            display: flex; gap: 0.5rem;
+            padding: 0.75rem 1.5rem 1.25rem;
+            border-top: 1px solid var(--border);
+            margin-top: 0.75rem;
+        }
+        #chat-input {
+            flex: 1;
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.87rem; color: var(--text);
+            outline: none; transition: border-color 0.2s;
+            resize: none;
+        }
+        #chat-input:focus { border-color: var(--primary); }
+        #chat-input::placeholder { color: var(--text-dim); }
+        #chat-send {
+            background: var(--primary);
+            border: none; border-radius: 8px;
+            padding: 0.6rem 1.1rem;
+            color: white; font-size: 1rem;
+            cursor: pointer; transition: background 0.2s, transform 0.1s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #chat-send:hover { background: var(--primary-dark); }
+        #chat-send:active { transform: scale(0.94); }
+        #chat-send:disabled { background: var(--border); cursor: not-allowed; }
+
+        .chat-config-notice {
+            padding: 0.6rem 1.5rem 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+            display: flex; align-items: center; gap: 0.4rem;
+        }
+        .chat-config-notice a {
+            color: var(--primary); text-decoration: none;
+        }
+        .chat-config-notice a:hover { text-decoration: underline; }
+
+        /* ── EXPERIENCE / TIMELINE ── */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 8px;
+            width: 2px;
+            height: calc(100% - 8px);
+            background: linear-gradient(to bottom, var(--primary), var(--secondary), transparent);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+            padding-left: 1.75rem;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: -2rem;
+            top: 6px;
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .timeline-item:hover .timeline-dot,
+        .timeline-item.current .timeline-dot {
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(10,132,255,0.5);
+        }
+        .timeline-item.current .timeline-dot {
+            background: var(--primary);
+        }
+        .timeline-header {
+            display: flex; flex-wrap: wrap;
+            align-items: baseline; gap: 0.5rem 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .timeline-company {
+            font-weight: 700; font-size: 1.1rem; color: var(--text);
+        }
+        .timeline-dates {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; color: var(--text-dim);
+            margin-left: auto;
+        }
+        .timeline-role {
+            font-size: 0.88rem; color: var(--primary);
+            font-weight: 600; margin-bottom: 0.15rem;
+        }
+        .timeline-location {
+            font-size: 0.8rem; color: var(--text-dim);
+            margin-bottom: 0.75rem;
+        }
+        .timeline-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .timeline-item:hover .timeline-card {
+            border-color: rgba(10,132,255,0.35);
+        }
+        .timeline-bullets {
+            list-style: none; padding: 0;
+            display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .timeline-bullets li {
+            font-size: 0.88rem; color: var(--text-dim);
+            padding-left: 1.25rem; position: relative;
+            line-height: 1.55;
+        }
+        .timeline-bullets li::before {
+            content: '▸';
+            position: absolute; left: 0;
+            color: var(--primary); font-size: 0.75rem;
+            top: 0.15em;
+        }
+        .timeline-bullets li strong { color: var(--text); }
+        .timeline-tags {
+            display: flex; flex-wrap: wrap; gap: 0.4rem;
+            margin-top: 1rem;
+        }
+        .timeline-tag {
+            padding: 0.2rem 0.65rem;
+            background: rgba(10,132,255,0.08);
+            border: 1px solid rgba(10,132,255,0.2);
+            border-radius: 20px;
+            font-size: 0.72rem; color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .current-badge {
+            display: inline-flex; align-items: center; gap: 0.35rem;
+            padding: 0.15rem 0.6rem;
+            background: rgba(48,213,200,0.1);
+            border: 1px solid rgba(48,213,200,0.3);
+            border-radius: 20px;
+            font-size: 0.68rem; color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            vertical-align: middle;
+        }
+        .current-badge::before {
+            content: '●'; font-size: 0.5rem;
+        }
+
+        /* ── SKILLS ── */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .skill-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .skill-card:hover { border-color: rgba(10,132,255,0.35); }
+        .skill-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .skill-card-title i { font-style: normal; font-size: 0.9rem; }
+        .skill-list {
+            display: flex; flex-direction: column; gap: 0.6rem;
+        }
+        .skill-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+        }
+        .skill-name {
+            font-size: 0.85rem; color: var(--text);
+            flex: 1; white-space: nowrap;
+        }
+        .skill-bar-wrap {
+            flex: 1; height: 4px;
+            background: var(--border); border-radius: 2px; overflow: hidden;
+        }
+        .skill-bar-fill {
+            height: 100%; border-radius: 2px;
+            background: var(--gradient-2);
+            transition: width 1s ease;
+        }
+        .skill-level {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem; color: var(--text-dim);
+            white-space: nowrap; width: 56px; text-align: right;
+        }
+
+        /* ── EDUCATION ── */
+        .edu-grid {
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+        .edu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex; gap: 1.5rem; align-items: flex-start;
+            transition: border-color 0.3s;
+        }
+        .edu-card:hover { border-color: rgba(10,132,255,0.35); }
+        .edu-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: rgba(10,132,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .edu-school {
+            font-weight: 700; font-size: 1rem;
+            margin-bottom: 0.15rem;
+        }
+        .edu-degree {
+            font-size: 0.88rem; color: var(--primary);
+            font-weight: 600; margin-bottom: 0.15rem;
+        }
+        .edu-meta {
+            font-size: 0.8rem; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ── VOLUNTEER ── */
+        .vol-grid {
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+        .vol-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex; gap: 1.5rem; align-items: flex-start;
+            transition: border-color 0.3s;
+        }
+        .vol-card:hover { border-color: rgba(48,213,200,0.3); }
+        .vol-icon {
+            width: 48px; height: 48px; border-radius: 10px;
+            background: rgba(48,213,200,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; flex-shrink: 0;
+        }
+        .vol-org { font-weight: 700; font-size: 1rem; margin-bottom: 0.15rem; }
+        .vol-role {
+            font-size: 0.88rem; color: var(--accent);
+            font-weight: 600; margin-bottom: 0.15rem;
+        }
+        .vol-dates {
+            font-size: 0.78rem; color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 0.5rem;
+        }
+        .vol-desc { font-size: 0.87rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* ── ABOUT / SUMMARY ── */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 0.5rem;
+        }
+        .about-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .about-card:hover { border-color: rgba(10,132,255,0.35); }
+        .about-card-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin-bottom: 0.75rem;
+        }
+        .about-card p {
+            font-size: 0.88rem; color: var(--text-dim); line-height: 1.7;
+        }
+        .about-card ul {
+            list-style: none; padding: 0;
+            display: flex; flex-direction: column; gap: 0.4rem;
+        }
+        .about-card ul li {
+            font-size: 0.85rem; color: var(--text-dim);
+            padding-left: 1.1rem; position: relative;
+        }
+        .about-card ul li::before {
+            content: '▸'; position: absolute; left: 0;
+            color: var(--primary); font-size: 0.7rem; top: 0.2em;
+        }
+        .about-stat-row {
+            display: flex; flex-direction: column; gap: 0.75rem;
+        }
+        .about-stat {
+            display: flex; justify-content: space-between; align-items: baseline;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .about-stat:last-child { border-bottom: none; padding-bottom: 0; }
+        .about-stat-label { font-size: 0.83rem; color: var(--text-dim); }
+        .about-stat-value { font-weight: 700; color: var(--primary); font-size: 1rem; }
+
+        /* ── Mobile ── */
+        #sidebar-toggle {
+            display: none;
+            background: none; border: none;
+            color: var(--text); font-size: 1.3rem;
+            cursor: pointer; padding: 0.25rem;
+        }
+        #sidebar-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 799;
+        }
+
+        @media (max-width: 900px) {
+            :root { --sidebar-w: 240px; }
+            #sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            #sidebar.open { transform: translateX(0); }
+            #sidebar-toggle { display: flex; }
+            #sidebar-overlay.show { display: block; }
+            #main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 1.5rem 1.25rem 4rem;
+            }
+            .about-grid { grid-template-columns: 1fr; }
+            .timeline { padding-left: 1.25rem; }
+            .timeline-item { padding-left: 1rem; }
+            .timeline-dates { margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <header id="site-header">
+        <div class="header-inner">
+            <button id="sidebar-toggle" aria-label="Toggle navigation">☰</button>
+            <a href="index.html" class="logo">
+                <span class="logo-bracket">&lt;</span><span class="logo-first">Sean</span> <span>Snodgrass</span><span class="logo-bracket">/&gt;</span>
+            </a>
+            <a href="index.html" class="logo-back">Back to site</a>
+        </div>
+    </header>
+
+    <div id="sidebar-overlay"></div>
+
+    <div class="layout">
+        <!-- ── Sidebar ── -->
+        <aside id="sidebar">
+            <div class="sidebar-profile">
+                <div class="sidebar-name">Sean Snodgrass</div>
+                <div class="sidebar-title">Analytics Engineer</div>
+                <div class="sidebar-status">
+                    <span class="status-dot"></span>
+                    Open to opportunities
+                </div>
+            </div>
+
+            <ul class="sidebar-nav">
+                <li><a href="#" data-section="about" class="active">
+                    <span class="nav-icon">◈</span> About
+                </a></li>
+                <li><a href="#" data-section="experience">
+                    <span class="nav-icon">⏱</span> Experience
+                </a></li>
+                <li><a href="#" data-section="skills">
+                    <span class="nav-icon">⚡</span> Skills
+                </a></li>
+                <li><a href="#" data-section="education">
+                    <span class="nav-icon">🎓</span> Education
+                </a></li>
+                <li><a href="#" data-section="volunteer">
+                    <span class="nav-icon">♥</span> Volunteer
+                </a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="mailto:hello@seansnodgrass.com">hello@seansnodgrass.com</a>
+                <a href="https://github.com/SeanSnodgrassPersonal" target="_blank" rel="noopener">GitHub</a>
+                <a href="https://linkedin.com/in/seansnodgrass" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </aside>
+
+        <!-- ── Main ── -->
+        <main id="main-content">
+
+            <!-- ── CHATBOT ── -->
+            <div id="chat-panel">
+                <div class="chat-bar" id="chat-toggle-bar">
+                    <div class="chat-bar-dots">
+                        <div class="chat-dot red"></div>
+                        <div class="chat-dot yellow"></div>
+                        <div class="chat-dot green"></div>
+                    </div>
+                    <span class="chat-bar-title">ask-sean.ai — powered by Claude</span>
+                    <span class="chat-bar-toggle" id="chat-toggle-label">[ collapse ]</span>
+                </div>
+                <div id="chat-body">
+                    <div class="chat-intro">
+                        <div class="chat-avatar">🤖</div>
+                        <div class="chat-intro-text">
+                            <strong>Hey, I'm Sean</strong> — or at least, an AI trained on my career history.
+                            Ask me anything about my experience, skills, or what I've built.
+                        </div>
+                    </div>
+                    <div class="chat-suggestions">
+                        <button class="suggest-chip" data-q="What's your biggest career accomplishment?">biggest win?</button>
+                        <button class="suggest-chip" data-q="Tell me about your experience with dbt and Snowflake.">dbt + Snowflake?</button>
+                        <button class="suggest-chip" data-q="What is ARIA and why does it matter?">what is ARIA?</button>
+                        <button class="suggest-chip" data-q="Have you led any platform migrations?">migrations?</button>
+                        <button class="suggest-chip" data-q="What industries have you worked in?">industries?</button>
+                    </div>
+                    <div id="chat-messages"></div>
+                    <div class="chat-input-row">
+                        <textarea id="chat-input" rows="1" placeholder="Ask me about my experience..."></textarea>
+                        <button id="chat-send" title="Send">↑</button>
+                    </div>
+                    <div class="chat-config-notice" id="chat-notice">
+                        ⚙ chatbot not yet configured —
+                        <a href="https://console.anthropic.com" target="_blank" rel="noopener">get an API key</a>
+                        &nbsp;then set <code>WORKER_URL</code> in the script below
+                    </div>
+                </div>
+            </div>
+
+            <!-- ══════════════ ABOUT ══════════════ -->
+            <section class="resume-section active" id="section-about">
+                <div class="section-eyebrow">Career Overview</div>
+                <h1 class="section-title">About Me</h1>
+                <p class="section-subtitle">12+ years building data platforms and analytics solutions</p>
+
+                <div class="about-grid">
+                    <div class="about-card" style="grid-column: 1 / -1;">
+                        <div class="about-card-title">Summary</div>
+                        <p>
+                            I'm a Senior Analytics Engineer with 12+ years of experience in Business Intelligence,
+                            data engineering, and platform modernization. My career has evolved from BI developer
+                            to data platform builder — I now own the executive reporting infrastructure at Care.com,
+                            including 200+ dbt models and ARIA, an AI-powered analytics agent I built from a
+                            hackathon project into a production platform used by 15 beta users including C-suite executives.
+                        </p>
+                        <p style="margin-top: 0.75rem;">
+                            I specialize in the modern data stack: Snowflake, dbt Cloud, and Tableau — with deep
+                            experience leading platform migrations, driving measurable business impact, and enabling
+                            teams through self-service analytics. Based in Austin, TX.
+                        </p>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-card-title">Key Stats</div>
+                        <div class="about-stat-row">
+                            <div class="about-stat">
+                                <span class="about-stat-label">Years of Experience</span>
+                                <span class="about-stat-value">12+</span>
+                            </div>
+                            <div class="about-stat">
+                                <span class="about-stat-label">Business Value Delivered</span>
+                                <span class="about-stat-value">$400M</span>
+                            </div>
+                            <div class="about-stat">
+                                <span class="about-stat-label">dbt Models Managed</span>
+                                <span class="about-stat-value">200+</span>
+                            </div>
+                            <div class="about-stat">
+                                <span class="about-stat-label">Incidents Reduced</span>
+                                <span class="about-stat-value">80%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-card-title">Industries</div>
+                        <ul>
+                            <li>Automotive — General Motors (6 years)</li>
+                            <li>Retail / SaaS — Revionics</li>
+                            <li>Financial Services — USAA (AML)</li>
+                            <li>Consumer Tech — Care.com (2021–present)</li>
+                            <li>Manufacturing — Dana Holding Corporation</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-card-title">Core Strengths</div>
+                        <ul>
+                            <li>Analytics engineering with dbt + Snowflake</li>
+                            <li>Executive reporting infrastructure at scale</li>
+                            <li>Platform migrations with zero-downtime discipline</li>
+                            <li>AI agent development (Snowflake Cortex / ARIA)</li>
+                            <li>Team enablement and self-service analytics</li>
+                            <li>Stakeholder management at executive level</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-card-title">Current Stack</div>
+                        <ul>
+                            <li>Snowflake (Admin-level) + Cortex AI</li>
+                            <li>dbt Cloud — 200+ models, daily exec reporting</li>
+                            <li>Tableau (Server admin)</li>
+                            <li>SQL (10+ years, daily use)</li>
+                            <li>Google Sheets + Fivetran for data ingestion</li>
+                            <li>GitHub for version control and code review</li>
+                        </ul>
+                    </div>
+
+                    <div class="about-card">
+                        <div class="about-card-title">Career Trajectory</div>
+                        <ul>
+                            <li>Intern → BI Developer → Sr. Analyst → Sr. Analytics Engineer</li>
+                            <li>Report consumer → Tableau admin → dbt platform owner</li>
+                            <li>Consistent pattern of platform modernization and migrations</li>
+                            <li>Recent focus: AI-powered analytics and self-service enablement</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══════════════ EXPERIENCE ══════════════ -->
+            <section class="resume-section" id="section-experience">
+                <div class="section-eyebrow">Work History</div>
+                <h1 class="section-title">Experience</h1>
+                <p class="section-subtitle">12+ years across automotive, finance, retail, and consumer tech</p>
+
+                <div class="timeline">
+
+                    <!-- Care.com — Data Services (current) -->
+                    <div class="timeline-item current">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">Care.com — Data Services</span>
+                            <span class="current-badge">current</span>
+                            <span class="timeline-dates">Mar 2024 – Present</span>
+                        </div>
+                        <div class="timeline-role">Senior Analytics Engineer</div>
+                        <div class="timeline-location">Remote</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Own and operate <strong>200+ dbt models</strong> powering daily executive reporting consumed by the C-suite and department leaders.</li>
+                                <li>Built <strong>ARIA</strong> (Analytical Response Intelligent Agent) — originated as a hackathon-winning project, now in beta with 15 users including executives. Saves <strong>5+ minutes per ad-hoc query</strong> and enables self-service analytics at the leadership level.</li>
+                                <li>Architected the <strong>WBR (Weekly Business Review)</strong> metrics platform from ~100 contractor-built metrics to <strong>1,000+ metrics</strong>; led governance cleanup removing 50%+ of stale metrics using Snowflake query history tracking.</li>
+                                <li>Created the <strong>DBR (Daily Business Review)</strong> — a daily subset that delivers metrics <strong>4 hours earlier</strong> than the full WBR through spend/non-spend split processing.</li>
+                                <li>Automated a previously manual forecasting process: Google Sheets → Fivetran → Snowflake → dbt, supporting 4 processing models and multi-granularity temporal distribution.</li>
+                                <li>Mentored an analyst from zero to fully productive in dbt and analytics engineering; built a two-person team that delivered at a pace that required organizational throttling.</li>
+                                <li>Serve as <strong>Snowflake instance admin</strong> managing roles, permissions, and warehouse optimization across the org.</li>
+                                <li>Led migration from dbt Core to <strong>dbt Cloud</strong>, transitioning 200+ models and improving team collaboration workflows.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">dbt Cloud</span>
+                                <span class="timeline-tag">Snowflake</span>
+                                <span class="timeline-tag">Snowflake Cortex</span>
+                                <span class="timeline-tag">Snowflake Intelligence</span>
+                                <span class="timeline-tag">Fivetran</span>
+                                <span class="timeline-tag">SQL</span>
+                                <span class="timeline-tag">YAML</span>
+                                <span class="timeline-tag">GitHub</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Care.com — Analytics & Data Insights -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">Care.com — Analytics & Data Insights</span>
+                            <span class="timeline-dates">Nov 2021 – Mar 2024</span>
+                        </div>
+                        <div class="timeline-role">Senior Business Intelligence Analyst</div>
+                        <div class="timeline-location">Austin, TX</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Owned analytics for the <strong>Pay Per Lead (PPL) product</strong> — delivered growth analytics, monetization reporting, and dashboards tracking lead volume and conversion for the company's core revenue product.</li>
+                                <li>Led critical migration from legacy visit tracking to <strong>Akamai CDN</strong>: months of parallel QA testing, identified and documented discrepancies (bot detection), secured executive buy-in to retire legacy system. New pipeline remains in production today.</li>
+                                <li>Served as <strong>Tableau Server administrator</strong> — managed asset lifecycle, schedules, and server upgrades with minimal downtime.</li>
+                                <li>Overhauled <strong>Amplitude event tracking</strong>: removed <strong>50% of properties</strong> and <strong>25% of events</strong>, established coding standards, transitioned ownership to Product.</li>
+                                <li>Led data enablement initiative consolidating multiple Jira boards into a unified system and migrating team knowledge base from SharePoint to Google Drive.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">Tableau</span>
+                                <span class="timeline-tag">Snowflake</span>
+                                <span class="timeline-tag">SQL</span>
+                                <span class="timeline-tag">Amplitude</span>
+                                <span class="timeline-tag">Akamai CDN</span>
+                                <span class="timeline-tag">Jira</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- USAA -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">USAA — Anti-Money Laundering</span>
+                            <span class="timeline-dates">May 2020 – Nov 2021</span>
+                        </div>
+                        <div class="timeline-role">Senior Business Intelligence Analyst</div>
+                        <div class="timeline-location">Austin, TX</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Generated <strong>Currency Transaction Reports (CTRs)</strong> for cash transactions over $10,000 and near-threshold triggers — ensuring federal regulatory compliance across hundreds of thousands of transactions.</li>
+                                <li>Assisted with implementation and configuration of <strong>Actimize</strong> fraud detection software for the AML organization.</li>
+                                <li>Served as <strong>data steward</strong> for metrics and data flows into and out of Actimize using IBM Infosphere Information Governance Catalog.</li>
+                                <li>Monitored and validated <strong>Suspicious Activity Report (SAR)</strong> filing processes to ensure timely and accurate regulatory reporting.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">Actimize</span>
+                                <span class="timeline-tag">IBM Infosphere</span>
+                                <span class="timeline-tag">SQL</span>
+                                <span class="timeline-tag">AML Compliance</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Revionics -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">Revionics</span>
+                            <span class="timeline-dates">Mar 2019 – Apr 2020</span>
+                        </div>
+                        <div class="timeline-role">Performance Intelligence Developer</div>
+                        <div class="timeline-location">Austin, TX</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Created and maintained approximately <strong>60 reports and 4 dashboards</strong> to evaluate retail promotion performance for customers.</li>
+                                <li>Led migration of reporting infrastructure from <strong>Teradata to Google BigQuery</strong> — re-architected queries and optimized performance with Google support.</li>
+                                <li>Managed concurrent model and report development with remote contract developers on a <strong>monthly release cadence</strong>.</li>
+                                <li>Conducted <strong>monthly customer demos</strong> of reporting capabilities in conjunction with product management.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">Google BigQuery</span>
+                                <span class="timeline-tag">Teradata</span>
+                                <span class="timeline-tag">SQL</span>
+                                <span class="timeline-tag">GCP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- General Motors -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">General Motors — Global Finance</span>
+                            <span class="timeline-dates">Jun 2013 – Mar 2019</span>
+                        </div>
+                        <div class="timeline-role">Business Intelligence Developer</div>
+                        <div class="timeline-location">Austin, TX</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Delivered <strong>$400M in direct business benefit</strong> via Cash Flow Analytics, Vehicle Profitability by VIN, and Cost Per Unit Read Across Matrix projects.</li>
+                                <li>Reduced global finance operational incidents by <strong>80%</strong> and cut average time to close by <strong>3 weeks</strong>.</li>
+                                <li>Decommissioned a legacy <strong>DB2 mainframe</strong> database — formatted and ingested into Teradata with anomaly detection and deduplication prior to reporting.</li>
+                                <li>Configured validation rules for <strong>100+ user-maintained files</strong> to streamline data ingestion.</li>
+                                <li>Won the <strong>IT Design Challenge</strong> for improving company data portal usability.</li>
+                                <li>Defined security group standards for finance reporting applications and developed a Power BI proof-of-concept dashboard for dealership management.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">Teradata</span>
+                                <span class="timeline-tag">IBM DataStage</span>
+                                <span class="timeline-tag">DB2</span>
+                                <span class="timeline-tag">Power BI</span>
+                                <span class="timeline-tag">SQL</span>
+                                <span class="timeline-tag">SFTP</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dana Holding -->
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-header">
+                            <span class="timeline-company">Dana Holding Corporation</span>
+                            <span class="timeline-dates">Jun 2012 – Aug 2012</span>
+                        </div>
+                        <div class="timeline-role">IT Business Analyst Intern</div>
+                        <div class="timeline-location">Maumee, OH</div>
+                        <div class="timeline-card">
+                            <ul class="timeline-bullets">
+                                <li>Designed an iOS application to modernize vehicle part inspection across <strong>300 manufacturing plants</strong>.</li>
+                                <li>Documented a mobile device inspection strategy in a <strong>43-page design document</strong>.</li>
+                            </ul>
+                            <div class="timeline-tags">
+                                <span class="timeline-tag">iOS</span>
+                                <span class="timeline-tag">UX Design</span>
+                                <span class="timeline-tag">Product Strategy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ══════════════ SKILLS ══════════════ -->
+            <section class="resume-section" id="section-skills">
+                <div class="section-eyebrow">Technical Expertise</div>
+                <h1 class="section-title">Skills</h1>
+                <p class="section-subtitle">Tools and technologies across 12+ years of data work</p>
+
+                <div class="skills-grid">
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>❄</i> Data Platforms</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">Snowflake</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:95%"></div></div>
+                                <span class="skill-level">Advanced · 4yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Teradata</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:90%"></div></div>
+                                <span class="skill-level">Advanced · 6yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Google BigQuery</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:75%"></div></div>
+                                <span class="skill-level">Advanced · 2yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">IBM DB2</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:60%"></div></div>
+                                <span class="skill-level">Intermediate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>🔧</i> ETL & Data Engineering</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">dbt (Core + Cloud)</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:95%"></div></div>
+                                <span class="skill-level">Advanced · 2yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">IBM DataStage</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:88%"></div></div>
+                                <span class="skill-level">Advanced · 6yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Fivetran</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:70%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">SFTP / File Transfer</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:75%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>📊</i> Business Intelligence</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">Tableau (+ Server admin)</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:92%"></div></div>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Microsoft Power BI</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%"></div></div>
+                                <span class="skill-level">Advanced · 5yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Microsoft Excel</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%"></div></div>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Amplitude</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:65%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>💻</i> Languages & Code</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">SQL</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:98%"></div></div>
+                                <span class="skill-level">Advanced · 10yr</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Python</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:40%"></div></div>
+                                <span class="skill-level">Beginner</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Git / GitHub</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:72%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">YAML (dbt / Cortex)</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:80%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>🤖</i> AI & Emerging Tech</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">Snowflake Cortex Analyst</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%"></div></div>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Snowflake Intelligence</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:80%"></div></div>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">AI Agent Development</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:75%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card">
+                        <div class="skill-card-title"><i>🛡</i> Governance & Security</div>
+                        <div class="skill-list">
+                            <div class="skill-row">
+                                <span class="skill-name">Data Governance Frameworks</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:85%"></div></div>
+                                <span class="skill-level">Advanced</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">IBM Infosphere IGC</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:70%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">AML / Compliance Systems</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:65%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                            <div class="skill-row">
+                                <span class="skill-name">Security Standards</span>
+                                <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:72%"></div></div>
+                                <span class="skill-level">Proficient</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ══════════════ EDUCATION ══════════════ -->
+            <section class="resume-section" id="section-education">
+                <div class="section-eyebrow">Academic Background</div>
+                <h1 class="section-title">Education</h1>
+                <p class="section-subtitle">Indiana University — Kelley School of Business</p>
+
+                <div class="edu-grid">
+                    <div class="edu-card">
+                        <div class="edu-icon">🎓</div>
+                        <div>
+                            <div class="edu-school">Indiana University — Kelley School of Business</div>
+                            <div class="edu-degree">Master of Science in Information Systems</div>
+                            <div class="edu-meta">Concentration: Business Intelligence & Information Security · May 2013</div>
+                        </div>
+                    </div>
+                    <div class="edu-card">
+                        <div class="edu-icon">📚</div>
+                        <div>
+                            <div class="edu-school">Indiana University — Kelley School of Business</div>
+                            <div class="edu-degree">Bachelor of Science in Information and Process Management</div>
+                            <div class="edu-meta">May 2012</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ══════════════ VOLUNTEER ══════════════ -->
+            <section class="resume-section" id="section-volunteer">
+                <div class="section-eyebrow">Community</div>
+                <h1 class="section-title">Volunteer Experience</h1>
+                <p class="section-subtitle">Giving back to the Austin community</p>
+
+                <div class="vol-grid">
+                    <div class="vol-card">
+                        <div class="vol-icon">🍽</div>
+                        <div>
+                            <div class="vol-org">Meals on Wheels of Central Texas</div>
+                            <div class="vol-role">Volunteer Driver</div>
+                            <div class="vol-dates">August 2016 – April 2020</div>
+                            <div class="vol-desc">Delivered hot meals weekly to elderly and disabled homebound individuals across the Austin metro area.</div>
+                        </div>
+                    </div>
+                    <div class="vol-card">
+                        <div class="vol-icon">🤝</div>
+                        <div>
+                            <div class="vol-org">Big Brothers Big Sisters of Central Texas</div>
+                            <div class="vol-role">Big Brother / Mentor</div>
+                            <div class="vol-dates">September 2016 – August 2019</div>
+                            <div class="vol-desc">Mentored a local high school student through monthly outings and ongoing emotional support, helping guide academic and personal development.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+    // ── Career knowledge base (system prompt for Claude) ──
+    const CAREER_CONTEXT = `You are Sean Snodgrass, speaking in first person about your own career. Answer questions directly, conversationally, and confidently — as if you're in a casual professional conversation. Keep answers focused and under 150 words unless a detailed answer is clearly needed. Don't be robotic; use natural language. Here is your career background:
+
+IDENTITY: Senior Analytics Engineer based in Austin, TX. Email: hello@seansnodgrass.com. 12+ years in Business Intelligence, Data Analytics, and Analytics Engineering.
+
+CURRENT ROLE: Senior Analytics Engineer at Care.com — Data Services (March 2024–present). I own 200+ dbt models powering daily executive reporting. I built ARIA (Analytical Response Intelligent Agent), an AI-powered self-service analytics platform that started as a hackathon winning project and is now in beta with 15 users including C-suite executives, saving 5+ minutes per ad-hoc query. I architect the WBR (Weekly Business Review) platform — grew it from ~100 contractor-built metrics to 1,000+, then led a governance cleanup that removed 50%+ of stale metrics. I created the DBR (Daily Business Review) which delivers metrics 4 hours earlier using spend/non-spend split processing. I serve as Snowflake instance admin. I mentored an analyst from zero to productive. I led migration from dbt Core to dbt Cloud across 200+ models.
+
+PREVIOUS ROLE: Senior BI Analyst at Care.com — Analytics & Data Insights (Nov 2021–Mar 2024). I owned analytics for the Pay Per Lead (PPL) product. I led the migration from a legacy visit tracking system to Akamai CDN — months of parallel QA testing, secured executive buy-in, and the new pipeline is still in production today. I was Tableau Server admin. I reduced Amplitude event sprawl by 50% of properties and 25% of events.
+
+PREVIOUS ROLE: Senior BI Analyst at USAA — Anti-Money Laundering (May 2020–Nov 2021). I generated Currency Transaction Reports (CTRs) for federal AML compliance, helped implement Actimize fraud detection software, and served as data steward using IBM Infosphere Information Governance Catalog.
+
+PREVIOUS ROLE: Performance Intelligence Developer at Revionics (Mar 2019–Apr 2020). I built ~60 reports and 4 dashboards for retail promotion performance. I led migration from Teradata to Google BigQuery. I managed remote contract developers on monthly release cycles.
+
+PREVIOUS ROLE: Business Intelligence Developer at General Motors — Global Finance (Jun 2013–Mar 2019). I delivered $400M in direct business value through Cash Flow Analytics, Vehicle Profitability by VIN, and Cost Per Unit projects. I reduced operational incidents by 80% and cut close times by 3 weeks. I decommissioned a legacy DB2 mainframe, built validation for 100+ data files, and won the IT Design Challenge.
+
+INTERNSHIP: IT Business Analyst Intern at Dana Holding Corporation (Jun–Aug 2012). Designed an iOS app for vehicle part inspection across 300 manufacturing plants. Produced a 43-page design document.
+
+TECHNICAL SKILLS: SQL (10+ years, Advanced), Snowflake (4+ years, Admin-level), dbt Core and dbt Cloud (2+ years, daily use — managing 200+ models), Tableau (Advanced, Server admin), Power BI (5+ years, Advanced), Teradata (6+ years, Advanced), Google BigQuery (2+ years, Advanced), IBM DataStage (6+ years, Advanced), Snowflake Cortex Analyst and Snowflake Intelligence (AI agent development), Fivetran, GitHub, Amplitude, Python (beginner), IBM Infosphere Information Governance Catalog, Actimize.
+
+EDUCATION: MS in Information Systems (BI & Information Security concentration) and BS in Information and Process Management — both from Indiana University Kelley School of Business (2012–2013).
+
+VOLUNTEER: Meals on Wheels of Central Texas driver (2016–2020). Big Brothers Big Sisters mentor (2016–2019).
+
+KEY ACHIEVEMENTS: $400M business value at GM. 80% incident reduction at GM. Built ARIA — AI analytics agent now in production beta. WBR platform with 1,000+ metrics. 4-hour DBR improvement. 50%+ metrics cleanup via Snowflake query history governance. Automated manual forecasting pipeline. Akamai CDN migration still in production years later. Amplitude governance: 50% property reduction, 25% event reduction.`;
+
+    // ── IMPORTANT: Set this to your Cloudflare Worker URL after deployment ──
+    const WORKER_URL = '';  // e.g. 'https://resume-chat.yourname.workers.dev'
+
+    // ── Sidebar navigation ──
+    const navLinks = document.querySelectorAll('.sidebar-nav a[data-section]');
+    const sections = document.querySelectorAll('.resume-section');
+
+    function showSection(id) {
+        sections.forEach(s => s.classList.remove('active'));
+        navLinks.forEach(a => a.classList.remove('active'));
+        const target = document.getElementById('section-' + id);
+        if (target) target.classList.add('active');
+        const link = document.querySelector(`.sidebar-nav a[data-section="${id}"]`);
+        if (link) link.classList.add('active');
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            showSection(link.dataset.section);
+            // close mobile sidebar
+            if (window.innerWidth <= 900) {
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('sidebar-overlay').classList.remove('show');
+            }
+        });
+    });
+
+    // ── Mobile sidebar toggle ──
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+    sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('open');
+        sidebarOverlay.classList.toggle('show');
+    });
+    sidebarOverlay.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+        sidebarOverlay.classList.remove('show');
+    });
+
+    // ── Chat collapse ──
+    const chatToggleBar = document.getElementById('chat-toggle-bar');
+    const chatBody = document.getElementById('chat-body');
+    const chatToggleLabel = document.getElementById('chat-toggle-label');
+    let chatOpen = true;
+
+    chatToggleBar.addEventListener('click', () => {
+        chatOpen = !chatOpen;
+        chatBody.classList.toggle('collapsed', !chatOpen);
+        chatToggleLabel.textContent = chatOpen ? '[ collapse ]' : '[ expand ]';
+    });
+
+    // ── Chat logic ──
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatNotice = document.getElementById('chat-notice');
+    const suggestions = document.querySelectorAll('.suggest-chip');
+
+    let conversationHistory = [];
+
+    function appendMessage(role, text) {
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg ' + (role === 'user' ? 'user' : 'assistant');
+
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.textContent = role === 'user' ? 'you' : 'SS';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble';
+        bubble.textContent = text;
+
+        msg.appendChild(avatar);
+        msg.appendChild(bubble);
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return bubble;
+    }
+
+    function appendThinking() {
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg assistant';
+        const avatar = document.createElement('div');
+        avatar.className = 'chat-msg-avatar';
+        avatar.textContent = 'SS';
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-bubble thinking';
+        bubble.innerHTML = '<div class="think-dot"></div><div class="think-dot"></div><div class="think-dot"></div>';
+        msg.appendChild(avatar);
+        msg.appendChild(bubble);
+        chatMessages.appendChild(msg);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        return msg;
+    }
+
+    async function sendMessage(text) {
+        if (!text.trim()) return;
+
+        if (!WORKER_URL) {
+            appendMessage('user', text);
+            appendMessage('assistant', 'The chatbot isn\'t configured yet — the site owner needs to set up a Cloudflare Worker with an Anthropic API key. Check back soon!');
+            return;
+        }
+
+        chatSend.disabled = true;
+        chatNotice.style.display = 'none';
+
+        appendMessage('user', text);
+        conversationHistory.push({ role: 'user', content: text });
+
+        const thinkingEl = appendThinking();
+
+        try {
+            const response = await fetch(WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    system: CAREER_CONTEXT,
+                    messages: conversationHistory
+                })
+            });
+
+            if (!response.ok) throw new Error('Worker returned ' + response.status);
+            const data = await response.json();
+            const reply = data.content?.[0]?.text || 'Sorry, I couldn\'t generate a response.';
+
+            thinkingEl.remove();
+            appendMessage('assistant', reply);
+            conversationHistory.push({ role: 'assistant', content: reply });
+        } catch (err) {
+            thinkingEl.remove();
+            appendMessage('assistant', 'Something went wrong — please try again in a moment.');
+            console.error('Chat error:', err);
+        }
+
+        chatSend.disabled = false;
+    }
+
+    chatSend.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        chatInput.value = '';
+        chatInput.style.height = 'auto';
+        sendMessage(text);
+    });
+
+    chatInput.addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+            sendMessage(text);
+        }
+    });
+
+    // Auto-resize textarea
+    chatInput.addEventListener('input', () => {
+        chatInput.style.height = 'auto';
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+
+    // Suggestion chips
+    suggestions.forEach(chip => {
+        chip.addEventListener('click', () => {
+            sendMessage(chip.dataset.q);
+            chip.closest('.chat-suggestions').style.display = 'none';
+        });
+    });
+    </script>
+</body>
+</html>

@@ -929,6 +929,9 @@
         @media (max-width: 768px) {
             body { cursor: auto; }
             #custom-cursor, #track-canvas { display: none; }
+            #etl-progress { display: none; }
+            #site-header { top: 0; } /* no ETL bar offset on mobile */
+            .container { padding-top: 70px; } /* account for header only */
 
             .header-inner {
                 flex-direction: column;

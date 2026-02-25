@@ -1044,6 +1044,110 @@
             top: 0.05em;
         }
 
+        /* ── Mobile Konami Controller ── */
+        #konami-ctrl {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.6rem;
+        }
+        #ctrl-toggle {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+            transition: transform 0.2s ease, background 0.2s ease;
+            flex-shrink: 0;
+        }
+        #ctrl-toggle:hover { background: var(--bg-hover); transform: scale(1.08); }
+        #ctrl-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0.9rem 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            transform-origin: bottom right;
+            transform: scale(0.6) translateY(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+        }
+        #ctrl-panel.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* Progress dots */
+        .ctrl-dots { display: flex; gap: 5px; }
+        .ctrl-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--border);
+            transition: background 0.15s ease, box-shadow 0.15s ease;
+        }
+        .ctrl-dot.lit {
+            background: var(--primary);
+            box-shadow: 0 0 5px var(--primary);
+        }
+        /* Controller body row */
+        .ctrl-body { display: flex; align-items: center; gap: 1.25rem; }
+        /* D-pad */
+        .ctrl-dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 40px);
+            grid-template-rows: repeat(3, 40px);
+            gap: 3px;
+        }
+        .ctrl-dpad-btn {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 5px;
+            transition: background 0.1s, transform 0.1s;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-dpad-btn:active, .ctrl-dpad-btn.flash { background: var(--primary); transform: scale(0.88); }
+        .ctrl-dpad-center { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 3px; }
+        .ctrl-up    { grid-column:2; grid-row:1; border-radius:5px 5px 2px 2px; }
+        .ctrl-left  { grid-column:1; grid-row:2; border-radius:5px 2px 2px 5px; }
+        .ctrl-right { grid-column:3; grid-row:2; border-radius:2px 5px 5px 2px; }
+        .ctrl-down  { grid-column:2; grid-row:3; border-radius:2px 2px 5px 5px; }
+        /* A / B face buttons */
+        .ctrl-face { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .ctrl-face-row { display: flex; gap: 6px; }
+        .ctrl-ab {
+            width: 44px; height: 44px;
+            border-radius: 50%; border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem; font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.1s;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-ab:active, .ctrl-ab.flash { transform: scale(0.88); filter: brightness(1.35); }
+        .ctrl-b { background: #b01850; color: #fff; }
+        .ctrl-a { background: #187838; color: #fff; }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -1951,13 +2055,14 @@
 
         function triggerCoaster() {
             running = true;
-            // Load video and open modal
             svIframe.src = 'https://www.youtube.com/embed/RTXTbzctl0c?start=47&autoplay=1';
             svOverlay.classList.add('show');
-            // Brief toast, then hide
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
+            document.dispatchEvent(new CustomEvent('konamiTriggered'));
         }
+        // Expose for mobile controller
+        window._konamiTrigger = triggerCoaster;
 
         function closeSV() {
             svOverlay.classList.remove('show');
@@ -1971,7 +2076,61 @@
     })();
 
     // ═══════════════════════════════════════════════
-    // 7. SMOOTH SCROLLING
+    // 7. MOBILE KONAMI CONTROLLER
+    // ═══════════════════════════════════════════════
+    (function() {
+        const toggle = document.getElementById('ctrl-toggle');
+        const panel  = document.getElementById('ctrl-panel');
+        const dots   = Array.from(document.querySelectorAll('.ctrl-dot'));
+        const SEQ    = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown',
+                         'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let pos  = 0;
+        let open = false;
+
+        toggle.addEventListener('click', () => {
+            open = !open;
+            panel.classList.toggle('open', open);
+            toggle.textContent = open ? '✕' : '🎮';
+        });
+
+        // Auto-close and reset when the Easter egg fires
+        document.addEventListener('konamiTriggered', () => {
+            open = false;
+            panel.classList.remove('open');
+            toggle.textContent = '🎮';
+            pos = 0;
+            updateDots();
+        });
+
+        function updateDots() {
+            dots.forEach((d, i) => d.classList.toggle('lit', i < pos));
+        }
+
+        function flash(btn) {
+            btn.classList.add('flash');
+            setTimeout(() => btn.classList.remove('flash'), 150);
+        }
+
+        document.querySelectorAll('[data-key]').forEach(btn => {
+            function handle(e) {
+                e.preventDefault();
+                const key = btn.dataset.key;
+                flash(btn);
+                pos = (key === SEQ[pos]) ? pos + 1 : (key === SEQ[0] ? 1 : 0);
+                updateDots();
+                if (pos === SEQ.length) {
+                    pos = 0;
+                    updateDots();
+                    window._konamiTrigger?.();
+                }
+            }
+            btn.addEventListener('click', handle);
+            btn.addEventListener('touchstart', handle, { passive: false });
+        });
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 8. SMOOTH SCROLLING
     // ═══════════════════════════════════════════════
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -2017,6 +2176,35 @@
         });
     });
     </script>
+
+    <!-- ── Mobile Konami Controller ── -->
+    <div id="konami-ctrl">
+        <div id="ctrl-panel">
+            <div class="ctrl-dots" id="ctrl-dots">
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+            </div>
+            <div class="ctrl-body">
+                <div class="ctrl-dpad">
+                    <button class="ctrl-dpad-btn ctrl-up"    data-key="ArrowUp">▲</button>
+                    <button class="ctrl-dpad-btn ctrl-left"  data-key="ArrowLeft">◀</button>
+                    <div    class="ctrl-dpad-center"></div>
+                    <button class="ctrl-dpad-btn ctrl-right" data-key="ArrowRight">▶</button>
+                    <button class="ctrl-dpad-btn ctrl-down"  data-key="ArrowDown">▼</button>
+                </div>
+                <div class="ctrl-face">
+                    <div class="ctrl-face-row">
+                        <button class="ctrl-ab ctrl-b" data-key="b">B</button>
+                        <button class="ctrl-ab ctrl-a" data-key="a">A</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="ctrl-toggle">🎮</button>
+    </div>
 
     <!-- ── Steel Vengeance Easter Egg Modal ── -->
     <div id="sv-overlay">

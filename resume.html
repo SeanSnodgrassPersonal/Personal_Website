@@ -210,6 +210,9 @@
             font-weight: 300; margin-bottom: 2.5rem;
         }
 
+        .about-card-full { grid-column: 1 / -1; }
+        .about-card-full p + p { margin-top: 0.75rem; }
+
         /* ── EXPERIENCE / TIMELINE ── */
         .timeline {
             position: relative;
@@ -332,7 +335,8 @@
             padding: 1.25rem 1.5rem;
             transition: border-color 0.3s;
         }
-        .skill-card:hover { border-color: rgba(10,132,255,0.35); }
+        .skill-card:hover,
+        .edu-card:hover { border-color: rgba(10,132,255,0.35); }
         .skill-card-title {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.72rem; color: var(--primary);
@@ -378,7 +382,6 @@
             display: flex; gap: 1.5rem; align-items: flex-start;
             transition: border-color 0.3s;
         }
-        .edu-card:hover { border-color: rgba(10,132,255,0.35); }
         .edu-icon {
             width: 48px; height: 48px; border-radius: 10px;
             background: rgba(10,132,255,0.1);
@@ -576,7 +579,7 @@
                 <p class="section-subtitle">12+ years building data platforms and analytics solutions</p>
 
                 <div class="about-grid">
-                    <div class="about-card" style="grid-column: 1 / -1;">
+                    <div class="about-card about-card-full">
                         <div class="about-card-title">Summary</div>
                         <p>
                             I'm a Senior Analytics Engineer with 12+ years of experience in Business Intelligence,
@@ -585,7 +588,7 @@
                             including 200+ dbt models and ARIA, an AI-powered analytics agent I built from a
                             hackathon project into a production platform used by 15 beta users including C-suite executives.
                         </p>
-                        <p style="margin-top: 0.75rem;">
+                        <p>
                             I specialize in the modern data stack: Snowflake, dbt Cloud, and Tableau — with deep
                             experience leading platform migrations, driving measurable business impact, and enabling
                             teams through self-service analytics. Based in Austin, TX.

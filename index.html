@@ -886,7 +886,8 @@
             position: fixed;
             bottom: 2rem;
             left: 50%;
-            transform: translateX(-50%) translateY(80px);
+            transform: translateX(-50%) translateY(16px);
+            opacity: 0;
             background: var(--bg-card);
             border: 1px solid var(--primary);
             border-radius: 10px;
@@ -895,12 +896,257 @@
             font-size: 0.8rem;
             color: var(--primary);
             z-index: 99991;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
             pointer-events: none;
         }
         #konami-toast.show {
             transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
+
+        /* ── Steel Vengeance Easter Egg Modal ── */
+        #sv-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 14, 39, 0.96);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+        #sv-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .sv-modal {
+            width: min(680px, 96vw);
+            max-height: 92vh;
+            overflow-y: auto;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+            transform: translateY(24px) scale(0.97);
+            transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        #sv-overlay.show .sv-modal {
+            transform: translateY(0) scale(1);
+        }
+        .sv-bar {
+            background: #161b22;
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .sv-btn { width: 12px; height: 12px; border-radius: 50%; border: none; cursor: default; padding: 0; flex-shrink: 0; }
+        .sv-btn.close { background: #ff5f57; cursor: pointer; }
+        .sv-btn.close:hover { filter: brightness(1.2); }
+        .sv-bar-title {
+            margin: 0 auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .sv-content { padding: 1.5rem 2rem 2rem; }
+        .sv-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-align: center;
+            background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.25rem;
+        }
+        .sv-video-wrap {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            background: #000;
+        }
+        .sv-video-wrap iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+        .sv-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 0.65rem;
+            margin-bottom: 1.5rem;
+        }
+        .sv-stat {
+            background: rgba(10, 132, 255, 0.06);
+            border: 1px solid rgba(10, 132, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.6rem 0.85rem;
+        }
+        .sv-stat-label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.2rem;
+        }
+        .sv-stat-value {
+            display: block;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .sv-records {
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+        }
+        .sv-records-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .sv-records ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .sv-records li {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .sv-records li::before {
+            content: '🏆';
+            position: absolute;
+            left: 0;
+            font-size: 0.72rem;
+            top: 0.05em;
+        }
+
+        /* ── Mobile Konami Controller ── */
+        #konami-ctrl {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            z-index: 9998;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.6rem;
+        }
+        #ctrl-toggle {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+            transition: transform 0.2s ease, background 0.2s ease;
+            flex-shrink: 0;
+        }
+        #ctrl-toggle:hover { background: var(--bg-hover); transform: scale(1.08); }
+        #ctrl-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 0.9rem 1rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            transform-origin: bottom right;
+            transform: scale(0.6) translateY(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s ease;
+        }
+        #ctrl-panel.open {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        /* Progress dots */
+        .ctrl-dots { display: flex; gap: 5px; }
+        .ctrl-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--border);
+            transition: background 0.15s ease, box-shadow 0.15s ease;
+        }
+        .ctrl-dot.lit {
+            background: var(--primary);
+            box-shadow: 0 0 5px var(--primary);
+        }
+        /* Controller body row */
+        .ctrl-body { display: flex; align-items: center; gap: 1.25rem; }
+        /* D-pad */
+        .ctrl-dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 40px);
+            grid-template-rows: repeat(3, 40px);
+            gap: 3px;
+        }
+        .ctrl-dpad-btn {
+            background: var(--bg-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 5px;
+            transition: background 0.1s, transform 0.1s;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-dpad-btn:active, .ctrl-dpad-btn.flash { background: var(--primary); transform: scale(0.88); }
+        .ctrl-dpad-center { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 3px; }
+        .ctrl-up    { grid-column:2; grid-row:1; border-radius:5px 5px 2px 2px; }
+        .ctrl-left  { grid-column:1; grid-row:2; border-radius:5px 2px 2px 5px; }
+        .ctrl-right { grid-column:3; grid-row:2; border-radius:2px 5px 5px 2px; }
+        .ctrl-down  { grid-column:2; grid-row:3; border-radius:2px 2px 5px 5px; }
+        /* A / B face buttons */
+        .ctrl-face { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        .ctrl-face-row { display: flex; gap: 6px; }
+        .ctrl-ab {
+            width: 44px; height: 44px;
+            border-radius: 50%; border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem; font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, filter 0.1s;
+            user-select: none; -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ctrl-ab:active, .ctrl-ab.flash { transform: scale(0.88); filter: brightness(1.35); }
+        .ctrl-b { background: #b01850; color: #fff; }
+        .ctrl-a { background: #187838; color: #fff; }
 
         /* Animations */
         @keyframes fadeIn {
@@ -1803,19 +2049,88 @@
             }
         });
 
+        const svOverlay = document.getElementById('sv-overlay');
+        const svIframe  = document.getElementById('sv-iframe');
+        const svClose   = document.getElementById('sv-close');
+
         function triggerCoaster() {
             running = true;
-            window.open('https://youtu.be/RTXTbzctl0c?t=47&si=mKmjcXd3PyPowm-5', '_blank');
+            svIframe.src = 'https://www.youtube.com/embed/RTXTbzctl0c?start=47&autoplay=1';
+            svOverlay.classList.add('show');
             toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-                running = false;
-            }, 2500);
+            setTimeout(() => toast.classList.remove('show'), 2000);
+            document.dispatchEvent(new CustomEvent('konamiTriggered'));
         }
+        // Expose for mobile controller
+        window._konamiTrigger = triggerCoaster;
+
+        function closeSV() {
+            svOverlay.classList.remove('show');
+            svIframe.src = '';   // stop the video
+            running = false;
+        }
+
+        svClose.addEventListener('click', closeSV);
+        svOverlay.addEventListener('click', e => { if (e.target === svOverlay) closeSV(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && running) closeSV(); });
     })();
 
     // ═══════════════════════════════════════════════
-    // 7. SMOOTH SCROLLING
+    // 7. MOBILE KONAMI CONTROLLER
+    // ═══════════════════════════════════════════════
+    (function() {
+        const toggle = document.getElementById('ctrl-toggle');
+        const panel  = document.getElementById('ctrl-panel');
+        const dots   = Array.from(document.querySelectorAll('.ctrl-dot'));
+        const SEQ    = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown',
+                         'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+        let pos  = 0;
+        let open = false;
+
+        toggle.addEventListener('click', () => {
+            open = !open;
+            panel.classList.toggle('open', open);
+            toggle.textContent = open ? '✕' : '🎮';
+        });
+
+        // Auto-close and reset when the Easter egg fires
+        document.addEventListener('konamiTriggered', () => {
+            open = false;
+            panel.classList.remove('open');
+            toggle.textContent = '🎮';
+            pos = 0;
+            updateDots();
+        });
+
+        function updateDots() {
+            dots.forEach((d, i) => d.classList.toggle('lit', i < pos));
+        }
+
+        function flash(btn) {
+            btn.classList.add('flash');
+            setTimeout(() => btn.classList.remove('flash'), 150);
+        }
+
+        document.querySelectorAll('[data-key]').forEach(btn => {
+            function handle(e) {
+                e.preventDefault();
+                const key = btn.dataset.key;
+                flash(btn);
+                pos = (key === SEQ[pos]) ? pos + 1 : (key === SEQ[0] ? 1 : 0);
+                updateDots();
+                if (pos === SEQ.length) {
+                    pos = 0;
+                    updateDots();
+                    window._konamiTrigger?.();
+                }
+            }
+            btn.addEventListener('click', handle);
+            btn.addEventListener('touchstart', handle, { passive: false });
+        });
+    })();
+
+    // ═══════════════════════════════════════════════
+    // 8. SMOOTH SCROLLING
     // ═══════════════════════════════════════════════
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function(e) {
@@ -1861,5 +2176,98 @@
         });
     });
     </script>
+
+    <!-- ── Mobile Konami Controller ── -->
+    <div id="konami-ctrl">
+        <div id="ctrl-panel">
+            <div class="ctrl-dots" id="ctrl-dots">
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+                <div class="ctrl-dot"></div><div class="ctrl-dot"></div>
+            </div>
+            <div class="ctrl-body">
+                <div class="ctrl-dpad">
+                    <button class="ctrl-dpad-btn ctrl-up"    data-key="ArrowUp">▲</button>
+                    <button class="ctrl-dpad-btn ctrl-left"  data-key="ArrowLeft">◀</button>
+                    <div    class="ctrl-dpad-center"></div>
+                    <button class="ctrl-dpad-btn ctrl-right" data-key="ArrowRight">▶</button>
+                    <button class="ctrl-dpad-btn ctrl-down"  data-key="ArrowDown">▼</button>
+                </div>
+                <div class="ctrl-face">
+                    <div class="ctrl-face-row">
+                        <button class="ctrl-ab ctrl-b" data-key="b">B</button>
+                        <button class="ctrl-ab ctrl-a" data-key="a">A</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button id="ctrl-toggle">🎮</button>
+    </div>
+
+    <!-- ── Steel Vengeance Easter Egg Modal ── -->
+    <div id="sv-overlay">
+        <div class="sv-modal">
+            <div class="sv-bar">
+                <button class="sv-btn close" id="sv-close" aria-label="Close"></button>
+                <div class="sv-btn" style="background:#febc2e"></div>
+                <div class="sv-btn" style="background:#28c840"></div>
+                <span class="sv-bar-title">🎢 easter egg unlocked</span>
+            </div>
+            <div class="sv-content">
+                <h2 class="sv-title">STEEL VENGEANCE</h2>
+                <div class="sv-video-wrap">
+                    <iframe id="sv-iframe" src="" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+                <div class="sv-stats">
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Manufacturer</span>
+                        <span class="sv-stat-value">Rocky Mountain Construction</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Park</span>
+                        <span class="sv-stat-value">Cedar Point, Ohio</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Height</span>
+                        <span class="sv-stat-value">205 ft (62 m)</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Top Speed</span>
+                        <span class="sv-stat-value">74 mph (119 km/h)</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Track Length</span>
+                        <span class="sv-stat-value">5,740 ft (1,749 m)</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Inversions</span>
+                        <span class="sv-stat-value">4</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Duration</span>
+                        <span class="sv-stat-value">2 min 30 sec</span>
+                    </div>
+                    <div class="sv-stat">
+                        <span class="sv-stat-label">Opened</span>
+                        <span class="sv-stat-value">May 5, 2018</span>
+                    </div>
+                </div>
+                <div class="sv-records">
+                    <p class="sv-records-title">World Records at Opening</p>
+                    <ul>
+                        <li>Tallest hybrid coaster in the world</li>
+                        <li>Fastest hybrid coaster in the world</li>
+                        <li>Longest hybrid coaster in the world</li>
+                        <li>Most inversions on a hybrid coaster (4)</li>
+                        <li>Steepest drop on a hybrid coaster (200 ft, 90°)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

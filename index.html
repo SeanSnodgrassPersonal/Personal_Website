@@ -1062,6 +1062,13 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 4px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        #konami-ctrl.at-bottom {
+            opacity: 1;
+            pointer-events: auto;
         }
         #ctrl-toggle {
             width: 56px;
@@ -1135,7 +1142,7 @@
             -webkit-tap-highlight-color: transparent;
         }
         .ctrl-dpad-btn:active, .ctrl-dpad-btn.flash { background: var(--primary); transform: scale(0.88); }
-        .ctrl-dpad-center { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 3px; }
+        .ctrl-dpad-center { grid-column:2; grid-row:2; background: var(--bg-hover); border: 1px solid var(--border); border-radius: 3px; }
         .ctrl-up    { grid-column:2; grid-row:1; border-radius:5px 5px 2px 2px; }
         .ctrl-left  { grid-column:1; grid-row:2; border-radius:5px 2px 2px 5px; }
         .ctrl-right { grid-column:3; grid-row:2; border-radius:2px 5px 5px 2px; }
@@ -2189,6 +2196,19 @@
                          'ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
         let pos  = 0;
         let open = false;
+
+        const ctrl = document.getElementById('konami-ctrl');
+        function checkScroll() {
+            const nearBottom = (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 120;
+            ctrl.classList.toggle('at-bottom', nearBottom);
+            if (!nearBottom && open) {
+                open = false;
+                panel.classList.remove('open');
+                toggle.textContent = '🎮';
+            }
+        }
+        window.addEventListener('scroll', checkScroll, { passive: true });
+        checkScroll();
 
         toggle.addEventListener('click', () => {
             open = !open;

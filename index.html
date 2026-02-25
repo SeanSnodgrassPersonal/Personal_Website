@@ -19,7 +19,6 @@
             --text: #E8EAED;
             --text-dim: #9BA1A6;
             --border: #1E2642;
-            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --gradient-2: linear-gradient(135deg, #0A84FF 0%, #5E5CE6 100%);
         }
 
@@ -454,7 +453,6 @@
             align-items: center;
             gap: 0.5rem;
             transition: all 0.3s ease;
-            cursor: none;
         }
 
         .btn-primary {
@@ -1164,6 +1162,13 @@
         .ctrl-b { background: #b01850; color: #fff; }
         .ctrl-a { background: #187838; color: #fff; }
 
+        /* ── Misc helpers (replaces inline styles) ── */
+        .sql-wrap { width: min(680px, 92vw); }
+        .sql-results-meta { margin-top: 0.6rem; color: var(--text-dim); font-size: 0.72rem; }
+        .sql-status-live { color: var(--accent); }
+        .sv-btn-min { background: #febc2e; }
+        .sv-btn-max { background: #28c840; }
+
         /* Animations */
         @keyframes fadeIn {
             from {
@@ -1245,7 +1250,7 @@
 
     <!-- ── SQL Intro Overlay ── -->
     <div id="sql-intro">
-        <div style="width:min(680px,92vw)">
+        <div class="sql-wrap">
             <div class="sql-terminal">
                 <div class="sql-terminal-bar">
                     <div class="term-btn close"></div>
@@ -1269,11 +1274,11 @@
                                 <td>Sean Snodgrass</td>
                                 <td>Analytics Engineer</td>
                                 <td>🎢 bourbon &amp; data</td>
-                                <td style="color:var(--accent)">● available</td>
+                                <td class="sql-status-live">● available</td>
                             </tr>
                         </tbody>
                     </table>
-                    <div style="margin-top:0.6rem;color:var(--text-dim);font-size:0.72rem">1 row returned in 0.042s</div>
+                    <div class="sql-results-meta">1 row returned in 0.042s</div>
                 </div>
             </div>
             <div class="sql-skip"><span id="sql-skip-btn">[ press any key or click to skip ]</span></div>
@@ -1327,6 +1332,7 @@
                     <li><a href="#home">Home</a></li>
                     <li><a href="#projects">Projects</a></li>
                     <li><a href="#skills">Skills</a></li>
+                    <li><a href="resume.html">Resume</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
@@ -1573,8 +1579,8 @@
         <div class="sv-modal">
             <div class="sv-bar">
                 <button class="sv-btn close" id="sv-close" aria-label="Close"></button>
-                <div class="sv-btn" style="background:#febc2e"></div>
-                <div class="sv-btn" style="background:#28c840"></div>
+                <div class="sv-btn sv-btn-min"></div>
+                <div class="sv-btn sv-btn-max"></div>
                 <span class="sv-bar-title">🎢 easter egg unlocked</span>
             </div>
             <div class="sv-content">
@@ -1928,116 +1934,6 @@
             ctx.strokeStyle = `rgba(228,242,255,${alpha * hlAlphaMult})`;
             ctx.lineWidth   = r * 0.55;
             ctx.beginPath(); ctx.moveTo(x0 - 0.7, y0 - 0.7); ctx.lineTo(x1 - 0.7, y1 - 0.7); ctx.stroke();
-        }
-
-        // ── (car drawing removed — using emoji cursor instead) ──
-        function drawCar(x, y, angle) { return; // no-op
-            ctx.save();
-            ctx.translate(x, y);
-            ctx.rotate(angle);
-            const s = isHovering ? 1.3 : 1.0;
-            ctx.scale(s, s);
-
-            // Shift so the NOSE TIP is at the cursor point (origin)
-            const NL = 22, RL = 16;  // nose / rear length from new origin
-            ctx.translate(-NL, 0);   // nose tip → cursor
-
-            // Vertical layout (local Y: negative = up on screen)
-            const yT = -9;   // roof line
-            const yB =  5;   // body floor
-            const yW = 10;   // wheel axle
-            const wR =  4;   // wheel radius
-
-            // ── Drop shadow ──
-            ctx.shadowColor = 'rgba(0,0,0,0.55)';
-            ctx.shadowBlur = 8; ctx.shadowOffsetX = 2; ctx.shadowOffsetY = 3;
-
-            // ── Main body shell ──
-            //   nose tip (NL,0) → roof → rear → floor → back to nose
-            ctx.beginPath();
-            ctx.moveTo(NL, 0);                                           // nose tip
-            ctx.quadraticCurveTo(NL * 0.8, yT - 1, NL * 0.05, yT);    // top of nose → roof
-            ctx.lineTo(-RL, yT + 2);                                    // roof → rear top
-            ctx.quadraticCurveTo(-RL - 2, 0, -RL, yB);                 // rear curve
-            ctx.lineTo(NL * 0.18, yB);                                  // floor
-            ctx.quadraticCurveTo(NL * 0.6, yB + 0.5, NL, 0);          // under-nose → tip
-            ctx.closePath();
-            ctx.fillStyle = '#0c1950'; ctx.fill();
-            ctx.shadowColor = 'transparent';
-            ctx.strokeStyle = '#243a85'; ctx.lineWidth = 0.8; ctx.stroke();
-
-            // ── Darker nose section ──
-            ctx.beginPath();
-            ctx.moveTo(NL, 0);
-            ctx.quadraticCurveTo(NL * 0.8, yT - 1, NL * 0.48, yT);
-            ctx.lineTo(NL * 0.48, yB - 0.5);
-            ctx.quadraticCurveTo(NL * 0.65, yB + 0.5, NL, 0);
-            ctx.closePath();
-            ctx.fillStyle = '#07103a'; ctx.fill();
-
-            // ── Wheel bogies (pillars from floor to axle) ──
-            ctx.fillStyle = '#141830';
-            [[NL * 0.15, 5.5], [-RL * 0.52, 5.5]].forEach(([bx, bw]) => {
-                ctx.beginPath(); ctx.rect(bx, yB - 0.5, 6, yW - yB + 1); ctx.fill();
-            });
-
-            // ── Wheels ──
-            [[NL * 0.18, yW], [-RL * 0.48, yW]].forEach(([wx, wy]) => {
-                ctx.fillStyle = '#111525';
-                ctx.beginPath(); ctx.arc(wx, wy, wR, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#384068';
-                ctx.beginPath(); ctx.arc(wx, wy, wR * 0.58, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#5568a8';
-                ctx.beginPath(); ctx.arc(wx - 0.7, wy - 0.7, wR * 0.22, 0, Math.PI * 2); ctx.fill();
-            });
-
-            // ── Seat backs (2 visible from side) ──
-            // Front seat starts at x=5, rear at x=-6 (small gap between them)
-            const seatXs = [5, -6];
-            seatXs.forEach(sx => {
-                ctx.fillStyle = '#1a2e90'; ctx.strokeStyle = '#2a44b8'; ctx.lineWidth = 0.4;
-                ctx.beginPath(); ctx.rect(sx, yT + 2, 7, 9); ctx.fill(); ctx.stroke();
-                ctx.fillStyle = '#0e1b62';  // headrest area (darker)
-                ctx.beginPath(); ctx.rect(sx + 3, yT + 2, 4, 9); ctx.fill();
-            });
-
-            // ── Headrests (oval bumps above each seat along the roof) ──
-            seatXs.forEach(sx => {
-                ctx.fillStyle = '#0f1e6a';
-                ctx.beginPath();
-                ctx.ellipse(sx + 3.5, yT - 1, 4, 2.5, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.strokeStyle = '#1a3090'; ctx.lineWidth = 0.5; ctx.stroke();
-            });
-
-            // ── Green OTSRs — ∩ arch with hanging arms (side view) ──
-            // ctx.arc(cx, cy, r, Math.PI, 0, false) = clockwise left→top→right = ∩
-            ctx.strokeStyle = '#1dd455'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
-            seatXs.forEach(sx => {
-                const cx = sx + 3.5, cy = yT + 5, r = 5.5;
-                // Arch
-                ctx.beginPath();
-                ctx.arc(cx, cy, r, Math.PI, 0, false);
-                ctx.stroke();
-                // Left arm (hangs down from left end of arch)
-                ctx.beginPath();
-                ctx.moveTo(cx - r, cy); ctx.lineTo(cx - r, cy + 4);
-                ctx.stroke();
-                // Right arm
-                ctx.beginPath();
-                ctx.moveTo(cx + r, cy); ctx.lineTo(cx + r, cy + 4);
-                ctx.stroke();
-            });
-
-            // ── Roof specular highlight ──
-            ctx.beginPath();
-            ctx.moveTo(NL * 0.5, yT + 0.5);
-            ctx.quadraticCurveTo(0, yT - 0.5, -RL * 0.55, yT + 2);
-            ctx.strokeStyle = 'rgba(140,180,245,0.38)';
-            ctx.lineWidth = 1.8; ctx.lineCap = 'round';
-            ctx.stroke();
-
-            ctx.restore();
         }
 
         // ── Main render loop ──

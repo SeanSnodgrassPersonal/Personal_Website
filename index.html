@@ -967,7 +967,15 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.3rem;
+        }
+        .sv-subtitle {
+            text-align: center;
+            font-size: 0.8rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 1.1rem;
         }
         .sv-video-wrap {
             position: relative;
@@ -1048,18 +1056,17 @@
         #konami-ctrl {
             position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            right: 0;
             z-index: 9998;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-end;
             gap: 4px;
         }
         #ctrl-toggle {
             width: 56px;
             height: 34px;
-            border-radius: 10px 10px 0 0;
+            border-radius: 10px 0 0 0;
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-bottom: none;
@@ -1084,7 +1091,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.75rem;
-            transform-origin: bottom center;
+            transform-origin: bottom right;
             transform: scale(0.6) translateY(20px);
             opacity: 0;
             pointer-events: none;
@@ -1565,6 +1572,7 @@
             </div>
             <div class="sv-content">
                 <h2 class="sv-title">STEEL VENGEANCE</h2>
+                <p class="sv-subtitle">Sean's Favorite Coaster</p>
                 <div class="sv-video-wrap">
                     <iframe id="sv-iframe" src="" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -2150,7 +2158,7 @@
 
         function triggerCoaster() {
             running = true;
-            svIframe.src = 'https://www.youtube.com/embed/RTXTbzctl0c?start=47&autoplay=1';
+            svIframe.src = 'https://www.youtube.com/embed/RTXTbzctl0c?start=47&autoplay=1&mute=1';
             svOverlay.classList.add('show');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);

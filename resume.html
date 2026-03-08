@@ -532,43 +532,43 @@
 
     <div id="sidebar-overlay"></div>
 
+    <!-- ── Sidebar (outside .layout so its z-index:800 wins over overlay z-index:799 in root context) ── -->
+    <aside id="sidebar">
+        <div class="sidebar-profile">
+            <div class="sidebar-name">Sean Snodgrass</div>
+            <div class="sidebar-title">Analytics Engineer</div>
+            <div class="sidebar-status">
+                <span class="status-dot"></span>
+                Open to opportunities
+            </div>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li><a href="#" data-section="about" class="active">
+                <span class="nav-icon">◈</span> About
+            </a></li>
+            <li><a href="#" data-section="experience">
+                <span class="nav-icon">⏱</span> Experience
+            </a></li>
+            <li><a href="#" data-section="skills">
+                <span class="nav-icon">⚡</span> Skills
+            </a></li>
+            <li><a href="#" data-section="education">
+                <span class="nav-icon">🎓</span> Education
+            </a></li>
+            <li><a href="#" data-section="volunteer">
+                <span class="nav-icon">♥</span> Volunteer
+            </a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <a href="mailto:hello@seansnodgrass.com">hello@seansnodgrass.com</a>
+            <a href="https://github.com/SeanSnodgrassPersonal" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://linkedin.com/in/seansnodgrass" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+    </aside>
+
     <div class="layout">
-        <!-- ── Sidebar ── -->
-        <aside id="sidebar">
-            <div class="sidebar-profile">
-                <div class="sidebar-name">Sean Snodgrass</div>
-                <div class="sidebar-title">Analytics Engineer</div>
-                <div class="sidebar-status">
-                    <span class="status-dot"></span>
-                    Open to opportunities
-                </div>
-            </div>
-
-            <ul class="sidebar-nav">
-                <li><a href="#" data-section="about" class="active">
-                    <span class="nav-icon">◈</span> About
-                </a></li>
-                <li><a href="#" data-section="experience">
-                    <span class="nav-icon">⏱</span> Experience
-                </a></li>
-                <li><a href="#" data-section="skills">
-                    <span class="nav-icon">⚡</span> Skills
-                </a></li>
-                <li><a href="#" data-section="education">
-                    <span class="nav-icon">🎓</span> Education
-                </a></li>
-                <li><a href="#" data-section="volunteer">
-                    <span class="nav-icon">♥</span> Volunteer
-                </a></li>
-            </ul>
-
-            <div class="sidebar-footer">
-                <a href="mailto:hello@seansnodgrass.com">hello@seansnodgrass.com</a>
-                <a href="https://github.com/SeanSnodgrassPersonal" target="_blank" rel="noopener">GitHub</a>
-                <a href="https://linkedin.com/in/seansnodgrass" target="_blank" rel="noopener">LinkedIn</a>
-            </div>
-        </aside>
-
         <!-- ── Main ── -->
         <main id="main-content">
 

@@ -1668,6 +1668,12 @@
         let cancelled = false;
         let timeouts = [];
 
+        // Skip loading screen when returning from another part of the site (e.g. resume)
+        if (document.referrer && new URL(document.referrer).hostname === window.location.hostname) {
+            overlay.style.display = 'none';
+            return;
+        }
+
         const lines = [
             { text: '-- loading profile...', cls: 'sql-cmt' },
             { text: '', cls: '' },

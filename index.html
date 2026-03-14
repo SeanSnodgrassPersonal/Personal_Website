@@ -436,6 +436,34 @@
             max-width: 600px;
         }
 
+        /* ── Hero two-column layout with headshot ── */
+        .hero-layout {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .hero-content {
+            flex: 1;
+        }
+
+        .hero-headshot-wrap {
+            flex-shrink: 0;
+            width: 300px;
+            height: 300px;
+        }
+
+        #headshot-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            /* Soft circular crop — fully opaque centre, fades to transparent at edges */
+            -webkit-mask-image: radial-gradient(circle at 50% 45%, black 50%, rgba(0,0,0,0.7) 65%, transparent 82%);
+            mask-image: radial-gradient(circle at 50% 45%, black 50%, rgba(0,0,0,0.7) 65%, transparent 82%);
+            opacity: 0;
+        }
+
         .cta-group {
             display: flex;
             gap: 1rem;
@@ -1210,6 +1238,18 @@
                 padding: 4rem 0 6rem;
             }
 
+            .hero-layout {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .hero-headshot-wrap {
+                width: 200px;
+                height: 200px;
+                order: -1;
+                align-self: center;
+            }
+
             .stats {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
@@ -1342,19 +1382,24 @@
     <div class="container">
         <main>
             <section id="home" class="hero">
-                <div class="hero-content">
-                    <span class="hero-tag" id="hero-tag">ANALYTICS ENGINEER</span>
-                    <h1 id="hero-h1"></h1>
-                    <p class="hero-tagline">Building intelligent data solutions</p>
-                    <p class="subtitle">ETL pipelines, process optimization, and AI-powered analytics</p>
-                    <p class="description">
-                        I'm Sean, an analytics engineer who loves turning messy data into actionable insights.
-                        Currently building the future of data analysis with AI agents in Snowflake. When I'm not
-                        optimizing pipelines, you'll find me on roller coasters or perfecting my bourbon cocktails.
-                    </p>
-                    <div class="cta-group">
-                        <a href="#projects" class="btn btn-primary">View My Work</a>
-                        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+                <div class="hero-layout">
+                    <div class="hero-content">
+                        <span class="hero-tag" id="hero-tag">ANALYTICS ENGINEER</span>
+                        <h1 id="hero-h1"></h1>
+                        <p class="hero-tagline">Building intelligent data solutions</p>
+                        <p class="subtitle">ETL pipelines, process optimization, and AI-powered analytics</p>
+                        <p class="description">
+                            I'm Sean, an analytics engineer who loves turning messy data into actionable insights.
+                            Currently building the future of data analysis with AI agents in Snowflake. When I'm not
+                            optimizing pipelines, you'll find me on roller coasters or perfecting my bourbon cocktails.
+                        </p>
+                        <div class="cta-group">
+                            <a href="#projects" class="btn btn-primary">View My Work</a>
+                            <a href="#contact" class="btn btn-secondary">Get in Touch</a>
+                        </div>
+                    </div>
+                    <div class="hero-headshot-wrap">
+                        <canvas id="headshot-canvas"></canvas>
                     </div>
                 </div>
             </section>
@@ -1808,6 +1853,65 @@
     })();
 
     // ═══════════════════════════════════════════════
+    // 2b. HEADSHOT PIXELATION REVEAL
+    // ═══════════════════════════════════════════════
+    (function() {
+        const canvas = document.getElementById('headshot-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // Render at 2× for retina sharpness; CSS keeps it at 300×300
+        const SIZE = 600;
+        canvas.width = SIZE;
+        canvas.height = SIZE;
+
+        const img = new Image();
+        img.src = 'headshot.jpg';
+        let imgLoaded = false;
+
+        img.onload = function() {
+            imgLoaded = true;
+        };
+
+        // progress: 0 (typing starts) → 1 (name fully typed)
+        function drawAtProgress(progress) {
+            if (!imgLoaded) return;
+
+            // Fade in quickly over first ~30% of typing, stay opaque for the rest
+            canvas.style.opacity = Math.min(1, progress / 0.3);
+
+            ctx.clearRect(0, 0, SIZE, SIZE);
+
+            // Map progress → pixel block size: starts blocky (28px), ends crisp (1px)
+            const maxBlock = 28;
+            const blockSize = Math.max(1, Math.round(maxBlock * Math.pow(1 - progress, 2)));
+
+            if (blockSize <= 1) {
+                // Full resolution
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, SIZE, SIZE);
+                return;
+            }
+
+            // Draw image at a tiny resolution then scale back up — creates pixel blocks
+            const tmpCanvas = document.createElement('canvas');
+            const w = Math.max(1, Math.ceil(SIZE / blockSize));
+            tmpCanvas.width = w;
+            tmpCanvas.height = w;
+            const tmpCtx = tmpCanvas.getContext('2d');
+            tmpCtx.imageSmoothingEnabled = true;
+            tmpCtx.drawImage(img, 0, 0, w, w);
+
+            ctx.imageSmoothingEnabled = false;
+            ctx.drawImage(tmpCanvas, 0, 0, SIZE, SIZE);
+        }
+
+        // Exposed for the typewriter to drive
+        window._headshotReveal = drawAtProgress;
+    })();
+
+    // ═══════════════════════════════════════════════
     // 3. TYPEWRITER ON HERO H1 (types your name)
     // ═══════════════════════════════════════════════
     (function() {
@@ -1827,6 +1931,10 @@
         function typeNext() {
             if (i <= text.length) {
                 el.textContent = text.slice(0, i) + (i < text.length ? '\u258c' : '');
+                // Drive headshot reveal in lock-step with typing progress
+                if (typeof window._headshotReveal === 'function') {
+                    window._headshotReveal(i / text.length);
+                }
                 i++;
                 setTimeout(typeNext, i === 1 ? 500 : 60 + Math.random() * 40);
             }

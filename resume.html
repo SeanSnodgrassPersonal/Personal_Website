@@ -60,9 +60,51 @@
         .orb-2 { bottom: -10%; left: 10%; width: 400px; height: 400px;
             background: radial-gradient(circle, var(--secondary) 0%, transparent 70%); }
 
+        /* ── ETL Progress Bar ── */
+        #etl-progress {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 9999; height: 36px;
+            background: rgba(10,14,39,0.95);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center;
+            padding: 0 1.5rem; gap: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem; color: var(--text-dim);
+            overflow: hidden;
+        }
+        .etl-stage {
+            display: flex; align-items: center; gap: 0.4rem;
+            padding: 0 0.75rem; height: 100%;
+            position: relative; transition: color 0.4s ease;
+            white-space: nowrap;
+        }
+        .etl-stage .etl-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--border);
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+            flex-shrink: 0;
+        }
+        .etl-stage.active { color: var(--accent); }
+        .etl-stage.active .etl-dot { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+        .etl-stage.done { color: var(--primary); }
+        .etl-stage.done .etl-dot { background: var(--primary); }
+        .etl-connector {
+            flex: 1; height: 1px; background: var(--border);
+            position: relative; overflow: hidden; min-width: 20px;
+        }
+        .etl-connector-fill {
+            position: absolute; top: 0; left: 0;
+            height: 100%; width: 0%;
+            background: var(--primary); transition: width 0.5s ease;
+        }
+        #etl-percent {
+            margin-left: auto; color: var(--primary);
+            font-size: 0.65rem; padding-left: 0.75rem; white-space: nowrap;
+        }
+
         /* ── Top bar ── */
         #site-header {
-            position: fixed; top: 0; left: 0; width: 100%;
+            position: fixed; top: 36px; left: 0; width: 100%;
             z-index: 900;
             background: rgba(10,14,39,0.92);
             backdrop-filter: blur(14px);
@@ -77,35 +119,42 @@
         }
         .logo {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.05rem; font-weight: 600;
-            text-decoration: none; color: var(--text);
+            font-size: 1.05rem; font-weight: 600; color: var(--text);
         }
         .logo-bracket { color: var(--primary); }
         .logo-first   { color: var(--primary); }
-        .logo-back {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem; color: var(--text-dim);
-            text-decoration: none;
-            display: flex; align-items: center; gap: 0.5rem;
-            transition: color 0.2s;
+        .logo-last    { color: var(--text); }
+
+        nav ul { display: flex; gap: 2rem; list-style: none; }
+        nav a {
+            color: var(--text-dim); text-decoration: none;
+            font-size: 0.95rem; font-weight: 500;
+            transition: color 0.3s ease; position: relative;
         }
-        .logo-back:hover { color: var(--primary); }
-        .logo-back::before { content: '←'; }
+        nav a::after {
+            content: ''; position: absolute;
+            bottom: -4px; left: 0; width: 0; height: 2px;
+            background: var(--primary); transition: width 0.3s ease;
+        }
+        nav a:hover { color: var(--text); }
+        nav a:hover::after { width: 100%; }
+        nav a.active { color: var(--primary); }
+        nav a.active::after { width: 100%; }
 
         /* ── Layout shell ── */
         .layout {
             position: relative; z-index: 1;
             display: flex;
             min-height: 100vh;
-            padding-top: 56px;
+            padding-top: 92px;
         }
 
         /* ── Sidebar ── */
         #sidebar {
             position: fixed;
-            top: 56px; left: 0;
+            top: 92px; left: 0;
             width: var(--sidebar-w);
-            height: calc(100vh - 56px);
+            height: calc(100vh - 92px);
             background: rgba(18,22,46,0.95);
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column;
@@ -496,6 +545,7 @@
 
         @media (max-width: 900px) {
             :root { --sidebar-w: 240px; }
+            nav { display: none; }
             #sidebar {
                 transform: translateX(-100%);
                 transition: transform 0.3s ease;
@@ -520,13 +570,30 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
+    <div id="etl-progress">
+        <div class="etl-stage done"><div class="etl-dot"></div><span>EXTRACT</span></div>
+        <div class="etl-connector"><div class="etl-connector-fill" style="width:100%"></div></div>
+        <div class="etl-stage done"><div class="etl-dot"></div><span>TRANSFORM</span></div>
+        <div class="etl-connector"><div class="etl-connector-fill" style="width:100%"></div></div>
+        <div class="etl-stage done"><div class="etl-dot"></div><span>LOAD</span></div>
+        <div class="etl-connector"><div class="etl-connector-fill" style="width:100%"></div></div>
+        <div class="etl-stage active"><div class="etl-dot"></div><span>DELIVER</span></div>
+        <div id="etl-percent">100%</div>
+    </div>
+
     <header id="site-header">
         <div class="header-inner">
             <button id="sidebar-toggle" aria-label="Toggle navigation">☰</button>
-            <a href="index.html" class="logo">
-                <span class="logo-bracket">&lt;</span><span class="logo-first">Sean</span> <span>Snodgrass</span><span class="logo-bracket">/&gt;</span>
-            </a>
-            <a href="index.html" class="logo-back">Back to site</a>
+            <div class="logo"><span class="logo-bracket">&lt;</span><span class="logo-first">Sean</span> <span class="logo-last">Snodgrass</span><span class="logo-bracket">/&gt;</span></div>
+            <nav>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#projects">Projects</a></li>
+                    <li><a href="index.html#skills">Skills</a></li>
+                    <li><a href="resume.html" class="active">Resume</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 

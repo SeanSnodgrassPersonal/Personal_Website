@@ -1273,16 +1273,27 @@
 
             .project-card-wrapper {
                 height: auto;
+                perspective: none;
             }
             .project-card-inner {
                 transform: none !important;
+                display: flex;
+                flex-direction: column;
+                height: auto;
             }
+            .project-card-front,
             .project-card-back {
-                display: none;
-            }
-            .project-card-front {
                 position: relative;
                 height: auto;
+                transform: none !important;
+            }
+            .project-card-back {
+                border-top: none;
+                border-radius: 0 0 12px 12px;
+                margin-top: -1px;
+            }
+            .project-card-front {
+                border-radius: 12px 12px 0 0;
             }
         }
     </style>

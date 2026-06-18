@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Amsterdam · July 2–3</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    /* Amsterdam canal palette — deep water navy, warm brick, tulip red, golden gable */
+    --navy:    #0d1a2b;
+    --navy2:   #122035;
+    --navy3:   #1a2d47;
+    --canal:   #1e3a5f;
+    --brick:   #c4673a;
+    --brick-dim: rgba(196,103,58,0.13);
+    --gold:    #d4a84b;
+    --gold-dim: rgba(212,168,75,0.13);
+    --tulip:   #e8536a;
+    --tulip-dim: rgba(232,83,106,0.13);
+    --sage:    #4a9e7a;
+    --sage-dim: rgba(74,158,122,0.1);
+    --sky:     #5b9ecf;
+    --sky-dim: rgba(91,158,207,0.12);
+    --lavender:#8b7fcc;
+    --lav-dim: rgba(139,127,204,0.13);
+    --teal:    #3db8a8;
+    --teal-dim:rgba(61,184,168,0.1);
+    --text:    #e8e4dc;
+    --muted:   #7a8a9a;
+    --faint:   #2a3d52;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --r: 12px;
+    --r-sm: 7px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ══════════════════════════════════════════
+     STICKY HEADER — never moves
+  ══════════════════════════════════════════ */
+  .header {
+    flex-shrink: 0;
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border2);
+    z-index: 200;
+  }
+
+  .header-top {
+    padding: 16px 18px 10px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header-wordmark {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* canal water texture strip */
+  .canal-strip {
+    height: 3px;
+    background: linear-gradient(90deg, var(--sky) 0%, var(--teal) 40%, var(--canal) 100%);
+    opacity: 0.7;
+  }
+
+  .title-line {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .title-sub {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  /* Gable SVG decoration top-right */
+  .gable-deco {
+    opacity: 0.25;
+  }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    padding: 0 18px;
+    gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .tab {
+    flex: 1;
+    padding: 10px 4px 9px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.01em;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  /* ══════════════════════════════════════════
+     SCROLLABLE BODY
+  ══════════════════════════════════════════ */
+  .panels {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .day-panel { display: none; padding: 14px 16px 60px; }
+  .day-panel.active { display: block; }
+
+  /* ── Light bar ── */
+  .light-bar {
+    background: var(--gold-dim);
+    border: 1px solid rgba(212,168,75,0.2);
+    border-radius: var(--r);
+    padding: 9px 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px 14px;
+    font-size: 11.5px;
+    color: #b8934a;
+    margin-bottom: 14px;
+  }
+  .light-bar strong { color: var(--gold); }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    padding: 0 2px;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; border: 2px solid; flex-shrink: 0; }
+
+  /* ══════════════════════════════════════════
+     TIMELINE
+  ══════════════════════════════════════════ */
+  .timeline { position: relative; padding-left: 20px; }
+  /* vertical line */
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 0;
+    bottom: 0;
+    width: 1.5px;
+    background: var(--faint);
+  }
+
+  /* ── One stop ── */
+  .stop { position: relative; margin-bottom: 18px; }
+
+  /* dot on the line */
+  .stop-dot {
+    position: absolute;
+    left: -20px;
+    top: 28px; /* aligns with card top area */
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--faint);
+    background: var(--navy);
+    z-index: 1;
+  }
+
+  /* dot colors */
+  .stop.coffee .stop-dot { border-color: var(--gold);    background: rgba(212,168,75,0.2); }
+  .stop.food   .stop-dot { border-color: var(--brick);   background: rgba(196,103,58,0.2); }
+  .stop.sight  .stop-dot { border-color: var(--lavender);background: rgba(139,127,204,0.2); }
+  .stop.beer   .stop-dot { border-color: var(--sky);     background: rgba(91,158,207,0.2); }
+  .stop.photo  .stop-dot { border-color: var(--tulip);   background: rgba(232,83,106,0.2); }
+  .stop.transit .stop-dot{ border-color: var(--muted);   background: var(--navy3); }
+  .stop.drink  .stop-dot { border-color: var(--teal);    background: rgba(61,184,168,0.2); }
+
+  /* ── Timestamp label above card ── */
+  .stop-time {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.04em;
+    margin-bottom: 5px;
+    padding-left: 1px;
+  }
+
+  /* ── Route pill between stops ── */
+  .route-pill {
+    font-size: 11px;
+    color: var(--muted);
+    font-style: italic;
+    margin: -10px 0 8px;
+    padding-left: 1px;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--navy3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .card.priority { border-color: rgba(139,127,204,0.35); }
+  .card-inner { padding: 11px 13px 9px; }
+
+  .card-hood {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+  .card-body {
+    font-size: 12px;
+    color: #8fa0b4;
+    line-height: 1.65;
+    margin-bottom: 8px;
+  }
+
+  /* ── Tags ── */
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .tag-warn { background: var(--tulip-dim); color: #f08090; border: 1px solid rgba(232,83,106,0.22); }
+  .tag-tip  { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+  .tag-food { background: var(--brick-dim); color: #d4885a; border: 1px solid rgba(196,103,58,0.22); }
+  .tag-beer { background: var(--sky-dim); color: #7eb8f9; border: 1px solid rgba(91,158,207,0.22); }
+  .tag-photo{ background: var(--tulip-dim); color: #f08090; border: 1px solid rgba(232,83,106,0.22); }
+  .tag-good { background: var(--sage-dim); color: #7ecda0; border: 1px solid rgba(74,158,122,0.22); }
+
+  /* ── Dual map buttons ── */
+  .map-row {
+    display: flex;
+    gap: 1px;
+    border-top: 1px solid var(--border);
+  }
+  .map-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 10px 8px;
+    background: rgba(255,255,255,0.03);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    transition: background 0.12s;
+    cursor: pointer;
+  }
+  .map-btn:active { background: rgba(255,255,255,0.09); }
+  .map-btn:first-child { border-radius: 0 0 0 var(--r); }
+  .map-btn:last-child  { border-radius: 0 0 var(--r) 0; border-left: 1px solid var(--border); }
+
+  /* Apple logo SVG inline */
+  .logo-apple { width: 15px; height: 15px; }
+  /* Google 'G' colored */
+  .logo-google { width: 15px; height: 15px; }
+
+  /* ══════════════════════════════════════════
+     INFO TAB
+  ══════════════════════════════════════════ */
+  .info-cards { display: flex; flex-direction: column; gap: 10px; }
+  .info-card {
+    background: var(--navy3);
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+  }
+  .info-card-inner { padding: 13px; }
+  .info-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 7px;
+  }
+  .info-body {
+    font-size: 12px;
+    color: #8fa0b4;
+    line-height: 1.7;
+  }
+  .info-body strong { color: #b8c8d8; }
+
+  /* canal divider used in info cards */
+  .canal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 0;
+  }
+
+  /* ── Backup items list in info ── */
+  .backup-item {
+    font-size: 12px;
+    color: #8fa0b4;
+    line-height: 1.6;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .backup-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .backup-item strong { color: #b8c8d8; }
+
+  /* Amsterdam gable motif header decoration */
+  .gable-row {
+    display: flex;
+    gap: 0;
+    align-items: flex-end;
+    height: 14px;
+    overflow: hidden;
+    opacity: 0.18;
+    margin-bottom: -1px;
+  }
+  .gable-row span {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-left: 1.5px solid var(--gold);
+    border-right: 1.5px solid var(--gold);
+    border-top: 1.5px solid var(--gold);
+    border-radius: 2px 2px 0 0;
+    margin-right: 3px;
+  }
+  .gable-row span:nth-child(2) { height: 9px; }
+  .gable-row span:nth-child(4) { height: 10px; }
+  .gable-row span:nth-child(6) { height: 8px; }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     STICKY HEADER
+════════════════════════════════ -->
+<div class="header">
+  <div class="canal-strip"></div>
+  <div class="header-top">
+    <div class="header-wordmark">
+      <div class="title-line">Amsterdam</div>
+      <div class="title-sub">July 2 – 3, 2026</div>
+    </div>
+    <!-- Spinning windmill SVG -->
+    <svg width="50" height="58" viewBox="0 0 50 58" fill="none" style="opacity:0.6;flex-shrink:0;">
+      <style>
+        #wm-sails {
+          animation: wm-spin 5s linear infinite;
+          transform-box: fill-box;
+          transform-origin: 50% 50%;
+        }
+        @keyframes wm-spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
+      </style>
+      <!-- Mill body: tapered tower -->
+      <path d="M17 52 L18 28 L32 28 L33 52 Z" fill="none" stroke="#d4a84b" stroke-width="1.4"/>
+      <!-- Mill door -->
+      <path d="M22 52 L22 44 Q25 41 28 44 L28 52 Z" fill="none" stroke="#d4a84b" stroke-width="1.1"/>
+      <!-- Windows -->
+      <rect x="21" y="32" width="3.5" height="3" rx="0.5" fill="none" stroke="#d4a84b" stroke-width="1"/>
+      <rect x="25.5" y="32" width="3.5" height="3" rx="0.5" fill="none" stroke="#d4a84b" stroke-width="1"/>
+      <!-- Cap -->
+      <path d="M16 28 Q25 22 34 28 Z" fill="none" stroke="#d4a84b" stroke-width="1.3"/>
+      <!-- Axle hub -->
+      <circle cx="25" cy="25" r="2.2" fill="#d4a84b" opacity="0.9"/>
+      <!-- Rotating sails -->
+      <g id="wm-sails">
+        <!-- Sail N -->
+        <line x1="25" y1="25" x2="25" y2="7" stroke="#d4a84b" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M25 7 L21 8 L23 18 L25 18 Z" fill="rgba(212,168,75,0.25)" stroke="#d4a84b" stroke-width="1" stroke-linejoin="round"/>
+        <!-- Sail E -->
+        <line x1="25" y1="25" x2="43" y2="25" stroke="#d4a84b" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M43 25 L42 21 L32 23 L32 25 Z" fill="rgba(212,168,75,0.25)" stroke="#d4a84b" stroke-width="1" stroke-linejoin="round"/>
+        <!-- Sail S -->
+        <line x1="25" y1="25" x2="25" y2="43" stroke="#d4a84b" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M25 43 L29 42 L27 32 L25 32 Z" fill="rgba(212,168,75,0.25)" stroke="#d4a84b" stroke-width="1" stroke-linejoin="round"/>
+        <!-- Sail W -->
+        <line x1="25" y1="25" x2="7" y2="25" stroke="#d4a84b" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M7 25 L8 29 L18 27 L18 25 Z" fill="rgba(212,168,75,0.25)" stroke="#d4a84b" stroke-width="1" stroke-linejoin="round"/>
+      </g>
+      <!-- Water / ground line -->
+      <path d="M2 55 Q13 52 25 55 Q37 58 48 55" stroke="#5b9ecf" stroke-width="1.2" fill="none" opacity="0.55"/>
+    </svg>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchDay('d1',this)">Thursday Jul 2</button>
+    <button class="tab" onclick="switchDay('d2',this)">Friday Jul 3</button>
+    <button class="tab" onclick="switchDay('info',this)">Info &amp; Tips</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     SCROLLABLE PANELS
+════════════════════════════════ -->
+<div class="panels">
+
+<!-- ══════ DAY 1 ══════ -->
+<div class="day-panel active" id="d1">
+
+  <div class="light-bar">
+    <span>🌅 Sunset <strong>9:52pm</strong></span>
+    <span>✨ Golden hour <strong>8:52–9:52pm</strong></span>
+    <span>🌃 Blue hour <strong>9:52–10:20pm</strong></span>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="border-color:#8b7fcc"></div>Museum</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#d4a84b"></div>Coffee</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#c4673a"></div>Food</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#5b9ecf"></div>Beer</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#e8536a"></div>Photo</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#3db8a8"></div>Drinks</div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- 11:20 Arrive -->
+    <div class="stop transit">
+      <div class="stop-time">11:20ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Centraal Station</div>
+          <div class="card-title">Arrive · bag drop · get bikes</div>
+          <div class="card-body">Bag drop at Flying Pig (Nieuwendijk 100, 2–3 min walk from the station exit — straight ahead, first alley right, left onto Nieuwendijk). Then MacBike Stationsplein for bikes — right outside Centraal. Get the bikes first; everything else flows from here.</div>
+          <div class="tags">
+            <span class="tag tag-tip">Flying Pig: Nieuwendijk 100</span>
+            <span class="tag tag-tip">MacBike: Stationsplein 5</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Amsterdam+Centraal+Station&ll=52.3791,4.9003" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Amsterdam+Centraal+Station" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12:15 Haring + Frites -->
+    <div class="stop food">
+      <div class="stop-time">12:15ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~10 min south from hostel</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Koningsplein</div>
+          <div class="card-title">Frens Haringhandel + Vleminckx Frites</div>
+          <div class="card-body">Raw herring with onion and pickle — eaten off a toothpick at the stall. Then Vleminckx is 5 min away in the alley off Koningsplein: frites with oorlog sauce (mayo + peanut + raw onion). Two iconic Dutch street bites for ~€6 total.</div>
+          <div class="tags">
+            <span class="tag tag-food">haring · €3</span>
+            <span class="tag tag-food">oorlog frites · €3.50</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Frens+Haringhandel+Amsterdam&ll=52.3657,4.8934" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Frens+Haringhandel+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13:00 Van Gogh -->
+    <div class="stop sight">
+      <div class="stop-time">13:00ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~12 min to Museumplein</div>
+      <div class="card priority">
+        <div class="card-inner">
+          <div class="card-hood">Museumplein</div>
+          <div class="card-title">Van Gogh Museum</div>
+          <div class="card-body">90 min comfortable. Chronological layout through Van Gogh's full arc. Don't rush the letters to Theo on the upper floors — they're the most moving part of the visit.</div>
+          <div class="tags">
+            <span class="tag tag-warn">pre-booked timed entry only</span>
+            <span class="tag tag-tip">~90 min</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Van+Gogh+Museum&ll=52.3584,4.8811" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Van+Gogh+Museum+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14:45 Rijksmuseum arch + Jordaan -->
+    <div class="stop photo">
+      <div class="stop-time">14:45ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Museumplein → Jordaan</div>
+          <div class="card-title">Rijksmuseum arch shot → Jordaan canal ride</div>
+          <div class="card-body">2-min walk from Van Gogh exit to the Rijksmuseum arch — frame the canal through it. Then bike into the Jordaan: Prinsengracht, Bloemgracht, Palmstraat. Lock up and walk the Negen Straatjes.</div>
+          <div class="tags">
+            <span class="tag tag-photo">arch tunnel + canal streets</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Negen+Straatjes+Amsterdam&ll=52.3692,4.8841" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Negen+Straatjes+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15:45 Haku -->
+    <div class="stop coffee">
+      <div class="stop-time">15:45ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Jordaan · Rozengracht</div>
+          <div class="card-title">Haku Specialty Coffee</div>
+          <div class="card-body">Rozengracht 69. In-house light roasts, Japanese-inflected, ceramic cups, genuinely calm. Lock the bike outside and sit for 30 min. The pace reset before the evening.</div>
+          <div class="tags"><span class="tag tag-tip">Rozengracht 69 · walk-in</span></div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Haku+Specialty+Coffee&ll=52.3731,4.8786" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Haku+Specialty+Coffee+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 16:30 Papeneiland -->
+    <div class="stop food">
+      <div class="stop-time">16:30ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 5 min from Haku</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Jordaan · canal corner</div>
+          <div class="card-title">The Papeneiland — appeltaart</div>
+          <div class="card-body">Corner of Prinsengracht and Brouwersgracht. Dutch apple tart with real whipped cream. Sit on the canal terrace. This intersection is also one of the best photography spots in the city — houseboats, arched bridges, afternoon light.</div>
+          <div class="tags">
+            <span class="tag tag-food">appeltaart + Dutch beer</span>
+            <span class="tag tag-photo">best canal corner in city</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Cafe+Papeneiland&ll=52.3779,4.8845" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Cafe+Papeneiland+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17:30 Warung -->
+    <div class="stop food">
+      <div class="stop-time">17:30ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~10–12 min to De Pijp</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">De Pijp</div>
+          <div class="card-title">Warung Spang Makandra — Surinamese dinner</div>
+          <div class="card-body">Roti with yellow curry, bakabana, saoto soup. The most distinctly Amsterdam meal you can eat, for ~€15. Counter order — take it to Sarphatipark two blocks away. No reservation needed.</div>
+          <div class="tags">
+            <span class="tag tag-food">roti + curry · ~€15</span>
+            <span class="tag tag-good">no reservation needed</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Warung+Spang+Makandra+Amsterdam&ll=52.3567,4.8978" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Warung+Spang+Makandra+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 18:45 Brouwerij 't IJ -->
+    <div class="stop beer">
+      <div class="stop-time">18:45ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~25–30 min east to Plantage — longest ride of the trip</div>
+      <div class="card priority">
+        <div class="card-inner">
+          <div class="card-hood">East · Plantage</div>
+          <div class="card-title">Brouwerij 't IJ — under the windmill</div>
+          <div class="card-body">Funenkade 7, under De Gooyer windmill. Self-service bar, terrace in summer. Order the Zatte Tripel. Closes hard at 8pm — arrive by 7pm for a proper sit.</div>
+          <div class="tags">
+            <span class="tag tag-warn">closes 8pm sharp · every day</span>
+            <span class="tag tag-beer">Zatte Tripel — the order</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Brouwerij+t+IJ&ll=52.3655,4.9274" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Brouwerij+t+IJ+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 19:45 Wynand Fockink -->
+    <div class="stop drink">
+      <div class="stop-time">19:45ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~20 min back to Centrum</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Centrum · Pijlsteeg alley</div>
+          <div class="card-title">Wynand Fockink Proeflokaal</div>
+          <div class="card-body">Hidden in an alley behind the Royal Palace since 1679. Stand at the bar, tilt your head, take the first sip of jenever hands-free. Closes 8:30pm — arrive by 8pm. If timing is tight: The Waterhole (live music, 10 min by bike) is the backup.</div>
+          <div class="tags">
+            <span class="tag tag-warn">closes 8:30pm</span>
+            <span class="tag tag-tip">Pijlsteeg 31 · look for the alley</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Wynand+Fockink+Amsterdam&ll=52.3739,4.8979" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Wynand+Fockink+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 20:50 Golden hour shoot -->
+    <div class="stop photo">
+      <div class="stop-time">20:50ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~10 min south along canal belt</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Canal Belt · Evening shoot</div>
+          <div class="card-title">Golden hour → Seven Bridges → Magere Brug</div>
+          <div class="card-body">Golden hour 8:52pm. Bike to Reguliersgracht × Herengracht — position and wait. Bridge lights come on at blue hour (9:52pm): deep blue sky + lit arches + water reflections. Tripod essential. Then 5 min to Magere Brug on the Amstel for the illuminated drawbridge long exposure.</div>
+          <div class="tags">
+            <span class="tag tag-photo">Seven Bridges · 9:52pm</span>
+            <span class="tag tag-photo">Magere Brug · long exposure</span>
+            <span class="tag tag-tip">tripod</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Reguliersgracht+Amsterdam&ll=52.3618,4.8966" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Reguliersgracht+Herengracht+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end d1 timeline -->
+</div>
+
+<!-- ══════ DAY 2 ══════ -->
+<div class="day-panel" id="d2">
+
+  <div class="light-bar">
+    <span>🚂 Train departs <strong>18:40</strong></span>
+    <span>⏱ Leave Walhalla by <strong>17:10</strong></span>
+    <span>🌅 Sunset <strong>9:51pm</strong></span>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="leg-dot" style="border-color:#8b7fcc"></div>Museum</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#d4a84b"></div>Coffee</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#c4673a"></div>Food</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#5b9ecf"></div>Beer</div>
+    <div class="legend-item"><div class="leg-dot" style="border-color:#e8536a"></div>Photo</div>
+  </div>
+
+  <div class="timeline">
+
+    <!-- 8:30 Lot61 -->
+    <div class="stop coffee">
+      <div class="stop-time">8:30</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">West · Kinkerstraat</div>
+          <div class="card-title">Lot Sixty One — morning coffee</div>
+          <div class="card-body">Kinkerstraat 112. The defining Amsterdam specialty coffee spot. Bike through the Jordaan canal streets en route — 8:30am is when the light is low and horizontal and the streets are empty. Brouwersgracht especially.</div>
+          <div class="tags">
+            <span class="tag tag-photo">Jordaan canals at 8am — empty</span>
+            <span class="tag tag-food">cinnamon bun</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Lot+Sixty+One+Coffee&ll=52.3663,4.8699" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Lot+Sixty+One+Coffee+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9:30 Rijksmuseum -->
+    <div class="stop sight">
+      <div class="stop-time">9:30</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~12 min to Museumplein</div>
+      <div class="card priority">
+        <div class="card-inner">
+          <div class="card-hood">Museumplein</div>
+          <div class="card-title">Rijksmuseum</div>
+          <div class="card-body">Go early — crowds peak 11am–2pm and the difference is real. The Night Watch, Vermeer's Milkmaid, the dollhouses. Budget 2–2.5 hours. Shoot the arch tunnel and reflecting pool on the way in while the light is still morning-soft.</div>
+          <div class="tags">
+            <span class="tag tag-warn">pre-book timed entry</span>
+            <span class="tag tag-photo">arch tunnel + pool · morning light</span>
+            <span class="tag tag-tip">2–2.5 hrs</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Rijksmuseum&ll=52.3600,4.8852" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Rijksmuseum+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12:00 Albert Cuyp -->
+    <div class="stop food">
+      <div class="stop-time">12:00ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~10 min to De Pijp</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">De Pijp</div>
+          <div class="card-title">Albert Cuyp Markt → Rudi's Stroopwafels</div>
+          <div class="card-body">Rudi's is at ~Cuypstraat 182 — permanent queue, fast. Fresh off the iron, eat immediately, keep it flat. Walk the market stalls. Closes around 5pm.</div>
+          <div class="tags">
+            <span class="tag tag-food">stroopwafel off the iron · non-negotiable</span>
+            <span class="tag tag-tip">market Tue–Sat 9am–5pm</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Albert+Cuyp+Markt+Amsterdam&ll=52.3556,4.8958" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Albert+Cuyp+Markt+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13:00 Lanskroon + Van Stapele -->
+    <div class="stop food">
+      <div class="stop-time">13:00ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 ~20 min north to Centrum</div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Centrum · Singel + Rokin</div>
+          <div class="card-title">Lanskroon + Van Stapele cookie</div>
+          <div class="card-body">Lanskroon (Singel 385): slagroom truffels — dark chocolate with fresh cream, eat same day. Then Van Stapele (Rokin 17): one dark chocolate cookie with molten white center, eaten warm. Get six — best deal.</div>
+          <div class="tags">
+            <span class="tag tag-food">slagroom truffle · Van Stapele cookie</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Lanskroon+Amsterdam&ll=52.3669,4.8894" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Lanskroon+Bakery+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14:00 Damrak + Vondelpark -->
+    <div class="stop photo">
+      <div class="stop-time">14:00ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Centrum → Vondelpark</div>
+          <div class="card-title">Damrak Dancing Houses → Vondelpark ride</div>
+          <div class="card-body">Damrak: the crooked canal house row near Centraal — shoot from the opposite bank in afternoon light. Then bike south through Vondelpark for a breather on the grass before the final push to Noord.</div>
+          <div class="tags">
+            <span class="tag tag-photo">Damrak reflections · afternoon light</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Damrak+Amsterdam&ll=52.3771,4.8951" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Damrak+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 15:30 Bocca -->
+    <div class="stop coffee">
+      <div class="stop-time">15:30ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Canal Belt</div>
+          <div class="card-title">Bocca Coffee — afternoon refuel</div>
+          <div class="card-body">Kerkstraat 96, near Rijksmuseum. B-Corp, direct-trade sourcing. Fuel up before the ferry run to Noord. Back to Black (Weteringstraat) is the alternative if you're routing differently.</div>
+          <div class="tags"><span class="tag tag-tip">Kerkstraat 96</span></div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Bocca+Coffee+Amsterdam&ll=52.3627,4.8876" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Bocca+Coffee+Amsterdam" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 16:00 Walhalla -->
+    <div class="stop beer">
+      <div class="stop-time">16:00ish</div>
+      <div class="stop-dot"></div>
+      <div class="route-pill">🚲 → Centraal · lock bikes · ferry 5 min · walk 5 min</div>
+      <div class="card priority">
+        <div class="card-inner">
+          <div class="card-hood">Amsterdam Noord</div>
+          <div class="card-title">Walhalla Brewery &amp; Taproom</div>
+          <div class="card-body">Opens 4pm Fridays. New location: Asterweg 2 — 5 min walk from the IJ ferry (Buiksloterweg stop). Viking-themed craft brewery. LOKI Golden IPA is the order. Leave by 17:10 sharp.</div>
+          <div class="tags">
+            <span class="tag tag-warn">opens 4pm Fri · new loc. Asterweg 2</span>
+            <span class="tag tag-beer">LOKI Golden IPA</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Walhalla+Brewery+Amsterdam&ll=52.3897,4.9072" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Walhalla+Brewery+Amsterdam+Noord" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 17:10 Head back -->
+    <div class="stop transit">
+      <div class="stop-time">17:10ish</div>
+      <div class="stop-dot"></div>
+      <div class="card">
+        <div class="card-inner">
+          <div class="card-hood">Noord → Centraal → Platform</div>
+          <div class="card-title">Ferry back · return bikes · bags · train</div>
+          <div class="card-body">Ferry to Centraal (5 min, every ~15 min). Return bikes at MacBike. Walk to Flying Pig for bags (5 min). Platform for 18:40 — be there by 18:25.</div>
+          <div class="tags">
+            <span class="tag tag-warn">leave Walhalla no later than 17:10</span>
+            <span class="tag tag-tip">platform by 18:25</span>
+          </div>
+        </div>
+        <div class="map-row">
+          <a class="map-btn" href="maps://?q=Amsterdam+Centraal+Station&ll=52.3791,4.9003" target="_blank">
+            <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+            Apple Maps
+          </a>
+          <a class="map-btn" href="https://maps.google.com/?q=Amsterdam+Centraal+Station" target="_blank">
+            <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+            Google Maps
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end d2 timeline -->
+</div>
+
+<!-- ══════ INFO ══════ -->
+<div class="day-panel" id="info">
+  <div class="info-cards">
+
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🏠 Home base</div>
+        <div class="info-body">Flying Pig Hostel · Nieuwendijk 100 · 2–3 min walk from Centraal (exit station, straight past Victoria Hotel, first alley right, left onto Nieuwendijk). Leave bags on arrival, collect on Friday before the train.</div>
+      </div>
+      <div class="map-row">
+        <a class="map-btn" href="maps://?q=Flying+Pig+Hostel+Amsterdam&ll=52.3771,4.8989" target="_blank">
+          <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+          Apple Maps
+        </a>
+        <a class="map-btn" href="https://maps.google.com/?q=Flying+Pig+Hostel+Amsterdam" target="_blank">
+          <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google Maps
+        </a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🚲 Bikes</div>
+        <div class="info-body">MacBike Stationsplein · 2 min from Flying Pig · right outside Centraal.<br>Return bikes before taking the ferry to Noord on Friday. A-Bike Rental at Vondelpark is also saved on your list. A-Bike Rental at Vondelpark is also saved on your list.</div>
+      </div>
+      <div class="map-row">
+        <a class="map-btn" href="maps://?q=MacBike+Stationsplein+Amsterdam&ll=52.3780,4.9008" target="_blank">
+          <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+          Apple Maps
+        </a>
+        <a class="map-btn" href="https://maps.google.com/?q=MacBike+Stationsplein+Amsterdam" target="_blank">
+          <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google Maps
+        </a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">⛴ Free IJ Ferry → Walhalla</div>
+        <div class="info-body">Behind Centraal Station — follow signs to <strong>Buiksloterweg</strong> ferry. Runs every 10–15 min, 24 hours, free. Walk 5 min from the stop to Walhalla at Asterweg 2.</div>
+      </div>
+      <div class="map-row">
+        <a class="map-btn" href="maps://?q=Walhalla+Brewery+Asterweg+Amsterdam&ll=52.3897,4.9072" target="_blank">
+          <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+          Apple Maps
+        </a>
+        <a class="map-btn" href="https://maps.google.com/?q=Asterweg+2+Amsterdam+Noord" target="_blank">
+          <svg class="logo-google" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+          Google Maps
+        </a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🌅 July light</div>
+        <div class="info-body">
+          16h 27min of daylight both days.<br>
+          <strong>Sunrise</strong> ~5:26am · <strong>Sunset</strong> ~9:52pm<br>
+          <strong>Golden hour</strong> 8:52–9:52pm<br>
+          <strong>Blue hour</strong> 9:52–10:20pm — bridge lights on, sky deep blue<br><br>
+          Best canal photos: before 9am (empty, low light) or after 8:52pm. Midday 11am–4pm is harsh and flat for canals.
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🗂 Backup options</div>
+        <div class="info-body">
+          <div class="backup-item"><strong>If Warung Spang Makandra is packed:</strong> Koeah or Toko Bersama West — both Indonesian, both on your Google Maps list.</div>
+          <div class="backup-item"><strong>If Wynand Fockink times out:</strong> The Waterhole (live music) is 10 min by bike on Korte Leidsedwarsstraat.</div>
+          <div class="backup-item"><strong>Café de Reiger</strong> (Jordaan brown café, on your list) works as alternate dinner on either day.</div>
+          <div class="backup-item"><strong>Hortus Botanicus</strong> is a 10-min walk from Brouwerij 't IJ — add it Day 1 if you leave De Pijp by 5:15pm.</div>
+          <div class="backup-item"><strong>Royal Palace</strong> is on Dam Square — exterior free, interior 45 min. You'll pass it biking Day 2.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- end info panel -->
+
+</div><!-- end .panels -->
+
+<script>
+function switchDay(id, btn) {
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.panels').scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>

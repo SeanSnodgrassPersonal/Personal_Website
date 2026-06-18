@@ -1719,23 +1719,6 @@
 
     <script>
     // ═══════════════════════════════════════════════
-    // 1. TIME-AWARE HERO TAG
-    // ═══════════════════════════════════════════════
-    (function() {
-        const hour = new Date().getHours();
-        const tag = document.getElementById('hero-tag');
-        if (hour >= 5 && hour < 9) {
-            tag.textContent = 'COFFEE-FUELED ANALYTICS ENGINEER';
-        } else if (hour >= 21 || hour < 2) {
-            tag.textContent = 'BOURBON-ADJACENT ANALYTICS ENGINEER';
-        } else if (hour >= 2 && hour < 5) {
-            tag.textContent = 'WHY ARE YOU AWAKE · ANALYTICS ENGINEER';
-        } else {
-            tag.textContent = 'ANALYTICS ENGINEER';
-        }
-    })();
-
-    // ═══════════════════════════════════════════════
     // 2. SQL INTRO ANIMATION
     // ═══════════════════════════════════════════════
     (function() {

@@ -593,7 +593,8 @@
             transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
             transform-style: preserve-3d;
         }
-        .project-card-wrapper:hover .project-card-inner {
+        .project-card-wrapper:hover .project-card-inner,
+        .project-card-wrapper.flipped .project-card-inner {
             transform: rotateY(180deg);
         }
         .project-card-front,
@@ -2110,6 +2111,14 @@
         document.querySelectorAll('a, button, .project-card-wrapper, .stat-card, .skill-tag').forEach(el => {
             el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
             el.addEventListener('mouseleave', () => { cursor.style.transform = 'translate(-50%,-50%) scale(1)';   });
+        });
+
+        // ── Tap-to-flip project cards on touch devices (no :hover support) ──
+        document.querySelectorAll('.project-card-wrapper').forEach(card => {
+            card.addEventListener('click', e => {
+                if (e.target.closest('a')) return;
+                card.classList.toggle('flipped');
+            });
         });
 
         // ── Tubular stroke: shadow → body → upper-left highlight ──

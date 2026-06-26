@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>London Trip · Jun 27 – Jul 7</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    /* British palette — deep navy, post-box red, gold, foggy sky */
+    --navy:    #0d1420;
+    --navy2:   #121b2b;
+    --navy3:   #1a2638;
+    --steel:   #2c4a6e;
+    --red:     #b3293b;
+    --red-dim: rgba(179,41,59,0.14);
+    --gold:    #c79a3f;
+    --gold-dim: rgba(199,154,63,0.13);
+    --fog:     #6f8aa6;
+    --fog-dim: rgba(111,138,166,0.12);
+    --sage:    #4a9e7a;
+    --sage-dim: rgba(74,158,122,0.1);
+    --lavender:#8b7fcc;
+    --lav-dim: rgba(139,127,204,0.13);
+    --teal:    #3db8a8;
+    --teal-dim:rgba(61,184,168,0.1);
+    --text:    #e8e4dc;
+    --muted:   #7a8a9a;
+    --faint:   #243549;
+    --border:  rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --r: 12px;
+    --r-sm: 7px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header { flex-shrink: 0; background: var(--navy2); border-bottom: 1px solid var(--border2); z-index: 200; }
+  .header-top { padding: 16px 18px 10px; display: flex; align-items: flex-end; justify-content: space-between; }
+  .header-wordmark { display: flex; flex-direction: column; }
+  .union-strip { height: 3px; background: linear-gradient(90deg, var(--red) 0%, var(--gold) 40%, var(--steel) 100%); opacity: 0.7; }
+  .title-line { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; }
+  .title-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+
+  /* scrollable tab row (lots of legs) */
+  .tabs { display: flex; padding: 0 10px; gap: 0; border-top: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tab { flex: 0 0 auto; padding: 10px 12px 9px; background: transparent; border: none; border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--muted); cursor: pointer; text-align: center; letter-spacing: 0.01em; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+  .panels { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .day-panel { display: none; padding: 14px 16px 60px; }
+  .day-panel.active { display: block; }
+
+  .light-bar { background: var(--gold-dim); border: 1px solid rgba(199,154,63,0.2); border-radius: var(--r); padding: 9px 13px; display: flex; flex-wrap: wrap; gap: 5px 14px; font-size: 11.5px; color: #d4ad5e; margin-bottom: 14px; }
+  .light-bar strong { color: var(--gold); }
+
+  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 18px 0 8px 2px; }
+  .section-label:first-child { margin-top: 0; }
+
+  .timeline { position: relative; padding-left: 20px; }
+  .timeline::before { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 1.5px; background: var(--faint); }
+
+  .stop { position: relative; margin-bottom: 18px; }
+  .stop-dot { position: absolute; left: -20px; top: 28px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--faint); background: var(--navy); z-index: 1; }
+  .stop.drive  .stop-dot { border-color: var(--fog);     background: rgba(111,138,166,0.2); }
+  .stop.park   .stop-dot { border-color: var(--lavender);background: rgba(139,127,204,0.2); }
+  .stop.hotel  .stop-dot { border-color: var(--gold);     background: rgba(199,154,63,0.2); }
+  .stop.flight .stop-dot { border-color: var(--red);      background: rgba(179,41,59,0.2); }
+  .stop.tbd    .stop-dot { border-color: var(--muted);    background: var(--navy3); }
+
+  .stop-time { font-size: 13px; font-weight: 700; color: #ffffff; letter-spacing: 0.04em; margin-bottom: 5px; padding-left: 1px; }
+  .route-pill { font-size: 11px; color: var(--muted); font-style: italic; margin: -10px 0 8px; padding-left: 1px; }
+
+  .card { background: var(--navy3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .card.priority { border-color: rgba(139,127,204,0.35); }
+  .card-inner { padding: 11px 13px 9px; }
+  .card-hood { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); margin-bottom: 3px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 5px; line-height: 1.3; }
+  .card-body { font-size: 12px; color: #8fa0b4; line-height: 1.65; margin-bottom: 8px; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.02em; }
+  .tag-warn { background: var(--red-dim); color: #e08a92; border: 1px solid rgba(179,41,59,0.25); }
+  .tag-tip  { background: rgba(255,255,255,0.05); color: var(--muted); border: 1px solid var(--border); }
+  .tag-good { background: var(--sage-dim); color: #7ecda0; border: 1px solid rgba(74,158,122,0.22); }
+  .tag-conf { background: var(--fog-dim); color: #9fc0de; border: 1px solid rgba(111,138,166,0.25); }
+  .tag-tbd  { background: rgba(255,255,255,0.04); color: var(--muted); border: 1px dashed var(--border2); }
+
+  .map-row { display: flex; gap: 1px; border-top: 1px solid var(--border); }
+  .map-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 8px; background: rgba(255,255,255,0.03); text-decoration: none; font-size: 12px; font-weight: 600; color: var(--text); transition: background 0.12s; cursor: pointer; }
+  .map-btn:active { background: rgba(255,255,255,0.09); }
+  .map-btn:first-child { border-radius: 0 0 0 var(--r); }
+  .map-btn:last-child  { border-radius: 0 0 var(--r) 0; border-left: 1px solid var(--border); }
+  .logo-apple { width: 15px; height: 15px; }
+
+  /* ── Info / packing list ── */
+  .info-cards { display: flex; flex-direction: column; gap: 10px; }
+  .info-card { background: var(--navy3); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+  .info-card-inner { padding: 13px; }
+  .info-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+  .info-body { font-size: 12px; color: #8fa0b4; line-height: 1.7; }
+  .info-body strong { color: #b8c8d8; }
+  .divider { height: 1px; background: var(--border); margin: 8px 0; }
+
+  .checklist { display: flex; flex-direction: column; gap: 0; }
+  .check-item { display: flex; align-items: flex-start; gap: 9px; font-size: 12.5px; color: #c8d4e0; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { flex-shrink: 0; width: 14px; height: 14px; margin-top: 1px; border: 1.5px solid var(--fog); border-radius: 3px; }
+
+  .park-pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .park-pill { font-size: 11px; padding: 4px 9px; border-radius: 999px; background: var(--lav-dim); color: #b7adf0; border: 1px solid rgba(139,127,204,0.25); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="union-strip"></div>
+  <div class="header-top">
+    <div class="header-wordmark">
+      <div class="title-line">London Trip</div>
+      <div class="title-sub">Jun 27 – Jul 7 · Hebron, KY → London → Hebron, KY</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="switchDay('pretrip',this)">Pre-Trip</button>
+    <button class="tab" onclick="switchDay('d1',this)">Sat 6/27</button>
+    <button class="tab" onclick="switchDay('d2',this)">Sun 6/28</button>
+    <button class="tab" onclick="switchDay('d3',this)">Mon 6/29</button>
+    <button class="tab" onclick="switchDay('d4',this)">Tue 6/30</button>
+    <button class="tab" onclick="switchDay('london',this)">London</button>
+    <button class="tab" onclick="switchDay('return',this)">Return Trip</button>
+    <button class="tab" onclick="switchDay('info',this)">Info &amp; Tips</button>
+  </div>
+</div>
+
+<div class="panels">
+
+  <!-- ════════════ PRE-TRIP ════════════ -->
+  <div class="day-panel active" id="pretrip">
+    <div class="light-bar">
+      <span>🏠 Departing <strong>1688 Grandview, Hebron, KY</strong></span>
+      <span>✈️ Outbound flight <strong>Tue Jul 30, 10:00pm JFK → LHR</strong></span>
+    </div>
+
+    <div class="section-label">Trip Overview</div>
+    <div class="card">
+      <div class="card-inner">
+        <div class="card-hood">The route</div>
+        <div class="card-title">Road trip to JFK → fly to London → road trip home</div>
+        <div class="card-body">Driving from Hebron, KY to JFK over 3 nights, hitting a few amusement parks along the way, then flying overnight to London for the main trip (Jul 1–7). Return leg home is still being booked — see the Return Trip tab.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Packing List</div>
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🎢 Theme park days (PA / NJ)</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div>Comfortable walking shoes + spare socks</div>
+          <div class="check-item"><div class="check-box"></div>Swimsuit + towel (Wildwater Kingdom, Breakwater Beach)</div>
+          <div class="check-item"><div class="check-box"></div>Sunscreen, hat, sunglasses</div>
+          <div class="check-item"><div class="check-box"></div>Portable phone charger / battery pack</div>
+          <div class="check-item"><div class="check-box"></div>Ziploc bags (phone + valuables on water rides)</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">✈️ Flight + London</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div>Passport + printed/digital flight confirmation (H5ZEBY)</div>
+          <div class="check-item"><div class="check-box"></div>UK power adapter (Type G)</div>
+          <div class="check-item"><div class="check-box"></div>Layers + a packable rain jacket</div>
+          <div class="check-item"><div class="check-box"></div>Travel pillow / eye mask for the overnight flight</div>
+          <div class="check-item"><div class="check-box"></div>Download offline Apple Maps area for London</div>
+          <div class="check-item"><div class="check-box"></div>Confirm/activate international phone plan</div>
+        </div>
+      </div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-inner">
+        <div class="info-title">🚗 General road trip</div>
+        <div class="checklist">
+          <div class="check-item"><div class="check-box"></div>All hotel confirmation numbers saved offline</div>
+          <div class="check-item"><div class="check-box"></div>Snacks + water bottles for the car</div>
+          <div class="check-item"><div class="check-box"></div>Parking plan for JFK (long-term lot booked?)</div>
+          <div class="check-item"><div class="check-box"></div>Medications / toiletries</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DAY 1 — Sat 6/27 — Harrisburg/Hershey ════════════ -->
+  <div class="day-panel" id="d1">
+    <div class="light-bar"><span>📍 Overnight in <strong>Harrisburg, PA</strong></span></div>
+
+    <div class="section-label">Amusement Park</div>
+    <div class="timeline">
+      <div class="stop park">
+        <div class="stop-time">Daytime</div>
+        <div class="stop-dot"></div>
+        <div class="card priority">
+          <div class="card-inner">
+            <div class="card-hood">Hershey, PA</div>
+            <div class="card-title">Hersheypark</div>
+            <div class="card-body">On the way to the hotel — Harrisburg/Hershey West is a few minutes from the park entrance.</div>
+            <div class="tags"><span class="tag-tip tag">⭐ 4.5 (67k)</span></div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Hersheypark" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hotel</div>
+    <div class="timeline">
+      <div class="stop hotel">
+        <div class="stop-time">Check-in 2:00pm</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Harrisburg · ★★</div>
+            <div class="card-title">Super 8 by Wyndham Harrisburg Hershey West</div>
+            <div class="card-body">4131 Executive Park Drive, Harrisburg, PA 17111<br>Check-out Sun 6/28 by 11:00am.</div>
+            <div class="tags">
+              <span class="tag tag-conf">Conf# 1016946114</span>
+              <span class="tag tag-tip">717-564-7790</span>
+              <span class="tag tag-warn">Arriving after 9pm? Call hotel</span>
+            </div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?address=4131+Executive+Park+Drive,+Harrisburg,+PA+17111" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DAY 2 — Sun 6/28 — Allentown ════════════ -->
+  <div class="day-panel" id="d2">
+    <div class="light-bar"><span>📍 Overnight in <strong>Allentown, PA</strong></span></div>
+
+    <div class="section-label">Amusement Park</div>
+    <div class="timeline">
+      <div class="stop park">
+        <div class="stop-time">Daytime</div>
+        <div class="stop-dot"></div>
+        <div class="card priority">
+          <div class="card-inner">
+            <div class="card-hood">Allentown, PA</div>
+            <div class="card-title">Dorney Park &amp; Wildwater Kingdom</div>
+            <div class="card-body">Coasters + waterpark combo, close to the Lehigh Valley hotel.</div>
+            <div class="tags"><span class="tag-tip tag">⭐ 4.4 (20.8k)</span><span class="tag-tip tag">$$</span></div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Dorney+Park+and+Wildwater+Kingdom" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hotel</div>
+    <div class="timeline">
+      <div class="stop hotel">
+        <div class="stop-time">Check-in 3:00pm</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Allentown</div>
+            <div class="card-title">Comfort Inn Lehigh Valley West</div>
+            <div class="card-body">7625 Imperial Way, Allentown, PA 18106<br>Check-out Mon 6/29 by 12:00pm.</div>
+            <div class="tags">
+              <span class="tag tag-conf">Conf# 43353955</span>
+              <span class="tag tag-tip">610-391-0344</span>
+            </div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?address=7625+Imperial+Way,+Allentown,+PA+18106" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DAY 3 — Mon 6/29 — Westampton, NJ ════════════ -->
+  <div class="day-panel" id="d3">
+    <div class="light-bar"><span>📍 Overnight in <strong>Westampton, NJ</strong></span></div>
+
+    <div class="section-label">Amusement Park(s)</div>
+    <div class="timeline">
+      <div class="stop park">
+        <div class="stop-time">Daytime</div>
+        <div class="stop-dot"></div>
+        <div class="card priority">
+          <div class="card-inner">
+            <div class="card-hood">Jackson, NJ</div>
+            <div class="card-title">Six Flags Great Adventure</div>
+            <div class="card-body">~35 min from the Westampton hotel. Closest big coaster park on this leg.</div>
+            <div class="tags"><span class="tag-tip tag">⭐ 4.4 (51.7k)</span></div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Six+Flags+Great+Adventure" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="stop park">
+        <div class="stop-time">Optional add-on</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Seaside Heights, NJ</div>
+            <div class="card-title">Casino Pier &amp; Breakwater Beach</div>
+            <div class="card-body">Jersey Shore boardwalk park — could swap in if you'd rather do shore + rides instead of Great Adventure, or add as an evening stop.</div>
+            <div class="tags"><span class="tag-tip tag">⭐ 4.5 (3.5k)</span></div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Casino+Pier+Breakwater+Beach" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hotel</div>
+    <div class="timeline">
+      <div class="stop hotel">
+        <div class="stop-time">Check-in 3:00pm</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Westampton</div>
+            <div class="card-title">Comfort Inn &amp; Suites Mt. Holly - Westampton</div>
+            <div class="card-body">2024 Route 541, Westampton, NJ 08060<br>Check-out Tue 6/30 by 11:00am. Free cancellation until Jun 26 4pm hotel time.</div>
+            <div class="tags">
+              <span class="tag tag-conf">Conf# 43355581</span>
+              <span class="tag tag-tip">609-702-9888</span>
+              <span class="tag tag-good">Free breakfast</span>
+            </div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?address=2024+Route+541,+Westampton,+NJ+08060" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ DAY 4 — Tue 6/30 — Flight out ════════════ -->
+  <div class="day-panel" id="d4">
+    <div class="light-bar"><span>✈️ Overnight flight to <strong>London</strong></span></div>
+
+    <div class="timeline">
+      <div class="stop drive">
+        <div class="stop-time">Daytime</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Westampton → JFK</div>
+            <div class="card-title">Drive to JFK, return rental / park car</div>
+            <div class="card-body">~1.5–2 hr drive from Westampton, NJ to JFK depending on traffic. Build in airport parking/return time before the flight.</div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=John+F.+Kennedy+International+Airport" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop flight">
+        <div class="stop-time">10:00pm JFK → 10:20am LHR (+1)</div>
+        <div class="stop-dot"></div>
+        <div class="card priority">
+          <div class="card-inner">
+            <div class="card-hood">Delta DL0003 · Airbus A330-900neo</div>
+            <div class="card-title">JFK (T4) → London Heathrow (T3)</div>
+            <div class="card-body">Nonstop, 7h 20m. Seat 20A, Delta Premium Select. Non-refundable, ticket expires Jan 20, 2027.</div>
+            <div class="tags">
+              <span class="tag tag-conf">Conf# H5ZEBY</span>
+              <span class="tag tag-tip">Round trip · returns Tue 7/7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ LONDON ════════════ -->
+  <div class="day-panel" id="london">
+    <div class="light-bar"><span>🇬🇧 In London <strong>Wed 7/1 – Tue 7/7</strong></span></div>
+    <div class="card">
+      <div class="card-inner">
+        <div class="card-hood">Main trip</div>
+        <div class="card-title">London itinerary lives separately</div>
+        <div class="card-body">This site is the before/after bookend for the road-trip + flight legs. Once the day-by-day London plans (sights, food, neighborhoods) are ready, this tab is the natural place to drop in a timeline matching the Amsterdam page's style.</div>
+        <div class="tags"><span class="tag tag-tbd">placeholder — to be filled in</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ RETURN TRIP ════════════ -->
+  <div class="day-panel" id="return">
+    <div class="light-bar"><span>⚠️ Hotels not yet booked — placeholder plan</span></div>
+
+    <div class="timeline">
+      <div class="stop flight">
+        <div class="stop-time">Tue 7/7 — Return flight</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Delta · Conf# H5ZEBY</div>
+            <div class="card-title">LHR → JFK</div>
+            <div class="card-body">Return leg of the round trip booked under H5ZEBY. Exact flight time TBD — check the return flight details.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stop tbd">
+        <div class="stop-time">JFK → Hebron, KY</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Multi-day drive home — hotels TBD</div>
+            <div class="card-title">Candidate amusement park stops ("Coaster Trek" list)</div>
+            <div class="card-body">Saved list of parks along plausible routes home — pick the ones that fit the path and book hotels nearby once the route is set.</div>
+            <div class="park-pill-row">
+              <span class="park-pill">Six Flags New England (MA)</span>
+              <span class="park-pill">Six Flags Darien Lake (NY)</span>
+              <span class="park-pill">Seabreeze Amusement Park (NY)</span>
+              <span class="park-pill">Canada's Wonderland (ON)</span>
+              <span class="park-pill">Knoebels Amusement Resort (PA)</span>
+            </div>
+            <div class="divider"></div>
+            <div class="tags"><span class="tag tag-tbd">Hotels: not booked</span><span class="tag tag-tbd">Route: not finalized</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════ INFO ════════════ -->
+  <div class="day-panel" id="info">
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-card-inner">
+          <div class="info-title">🏠 Start &amp; end point</div>
+          <div class="info-body"><strong>1688 Grandview, Hebron, KY</strong> — home base, departure and final return point.</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-inner">
+          <div class="info-title">📋 All confirmation numbers</div>
+          <div class="info-body">
+            <strong>Super 8 Harrisburg Hershey West:</strong> 1016946114<br>
+            <strong>Comfort Inn Lehigh Valley West:</strong> 43353955<br>
+            <strong>Comfort Inn &amp; Suites Mt. Holly–Westampton:</strong> 43355581<br>
+            <strong>Delta flight (JFK ⇄ LHR):</strong> H5ZEBY
+          </div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-inner">
+          <div class="info-title">🗺️ Map link format</div>
+          <div class="info-body">All location buttons use the <strong>maps://</strong> scheme so they open directly in Apple Maps on iOS/macOS. If a link doesn't open, search the address shown on the card instead.</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-inner">
+          <div class="info-title">🚧 Still open</div>
+          <div class="info-body">Return-trip hotels, exact return-route amusement park picks, and the day-by-day London itinerary still need to be filled in.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .panels -->
+
+<script>
+function switchDay(id, btn) {
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  document.querySelector('.panels').scrollTo({top: 0, behavior: 'smooth'});
+}
+</script>
+</body>
+</html>

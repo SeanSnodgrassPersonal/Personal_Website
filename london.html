@@ -140,6 +140,7 @@
     <button class="tab" onclick="switchDay('d3',this)">Mon 6/29</button>
     <button class="tab" onclick="switchDay('d4',this)">Tue 6/30</button>
     <button class="tab" onclick="switchDay('london',this)">London</button>
+    <button class="tab" onclick="switchDay('d4b',this)">Tue 7/7</button>
     <button class="tab" onclick="switchDay('d5',this)">Wed 7/8</button>
     <button class="tab" onclick="switchDay('d6',this)">Thu 7/9</button>
     <button class="tab" onclick="switchDay('d7',this)">Fri 7/10</button>
@@ -525,34 +526,45 @@
     </div>
   </div>
 
-  <!-- ════════════ DAY 5 — Wed 7/8 — Six Flags New England ════════════ -->
-  <div class="day-panel" id="d5">
+  <!-- ════════════ DAY 4B — Tue 7/7 — Land at JFK + Six Flags New England ════════════ -->
+  <div class="day-panel" id="d4b">
     <div class="light-bar"><span>📍 Overnight in <strong>Springfield, MA</strong></span></div>
 
     <div class="timeline">
       <div class="stop flight">
-        <div class="stop-time">Tue 7/7 (overnight before)</div>
+        <div class="stop-time">~7:00pm</div>
         <div class="stop-dot"></div>
         <div class="card">
           <div class="card-inner">
             <div class="card-hood">Delta · Conf# H5ZEBY</div>
             <div class="card-title">LHR → JFK (return leg)</div>
-            <div class="card-body">Return leg of the round trip booked under H5ZEBY. Exact flight time TBD — check the return flight details.</div>
+            <div class="card-body">Return leg of the round trip booked under H5ZEBY. Lands JFK around 7:00pm, then drive north toward the Springfield, MA area.</div>
+          </div>
+        </div>
+      </div>
+      <div class="stop drive">
+        <div class="stop-time">Evening</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Drive</div>
+            <div class="card-title">JFK → Springfield, MA</div>
+            <div class="card-body">~3hr drive north toward Six Flags New England, heading for the night's hotel.</div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="section-label">Amusement Park</div>
+    <div class="section-label">Amusement Park (next day)</div>
     <div class="timeline">
       <div class="stop park">
-        <div class="stop-time">Daytime</div>
+        <div class="stop-time">Wed 7/8 — Daytime</div>
         <div class="stop-dot"></div>
         <div class="card priority">
           <div class="card-inner">
             <div class="card-hood">Agawam, MA</div>
             <div class="card-title">Six Flags New England</div>
-            <div class="card-body">~3hr drive from JFK area. First stop heading north on the way toward upstate NY / Canada.</div>
+            <div class="card-body">First stop heading north on the way toward upstate NY / Canada.</div>
             <div class="tags"><span class="tag-tip tag">⭐ 4.2 (21.6k)</span></div>
           </div>
           <div class="map-row">
@@ -590,6 +602,68 @@
     </div>
   </div>
 
+  <!-- ════════════ DAY 5 — Wed 7/8 — Six Flags New England + drive to Rochester ════════════ -->
+  <div class="day-panel" id="d5">
+    <div class="light-bar"><span>📍 Overnight in <strong>Rochester, NY</strong></span></div>
+
+    <div class="section-label">Amusement Park</div>
+    <div class="timeline">
+      <div class="stop park">
+        <div class="stop-time">Daytime</div>
+        <div class="stop-dot"></div>
+        <div class="card priority">
+          <div class="card-inner">
+            <div class="card-hood">Agawam, MA</div>
+            <div class="card-title">Six Flags New England</div>
+            <div class="card-body">Overnighted nearby in Springfield, MA. After the park, drive west toward Rochester, NY for the night.</div>
+            <div class="tags"><span class="tag-tip tag">⭐ 4.2 (21.6k)</span></div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Six+Flags+New+England" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="stop drive">
+        <div class="stop-time">Evening</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Drive</div>
+            <div class="card-title">Springfield, MA → Rochester, NY</div>
+            <div class="card-body">~3hr40 drive west across NY on the way toward Seabreeze and Darien Lake.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Hotel</div>
+    <div class="timeline">
+      <div class="stop hotel">
+        <div class="stop-time">Check-in 3:00pm</div>
+        <div class="stop-dot"></div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Rochester, NY</div>
+            <div class="card-title">Motel 6 Rochester, NY - Airport</div>
+            <div class="card-body">1273 Chili Avenue, Rochester, NY 14624<br>+1 585 464 8800<br>Wed 7/8 3:00pm – Thu 7/9 11:00am (1 night), Standard King Room<br>Total: $90.76 · $100 cash damage deposit due at check-in · no guest parking · free WiFi in public areas</div>
+            <div class="tags">
+              <span class="tag tag-conf">Conf# 6778.467.495 · PIN 7176</span>
+            </div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?address=1273+Chili+Avenue,+Rochester,+NY+14624" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════ DAY 6 — Thu 7/9 — Seabreeze + Darien Lake ════════════ -->
   <div class="day-panel" id="d6">
     <div class="light-bar"><span>📍 Overnight in <strong>Brampton, ON</strong></span> <span>🛂 Crossing into Canada this evening — bring passports</span></div>
@@ -603,7 +677,7 @@
           <div class="card-inner">
             <div class="card-hood">Rochester, NY</div>
             <div class="card-title">Seabreeze Amusement Park</div>
-            <div class="card-body">~4hr drive from the Agawam area. First stop on the way west toward Darien Lake.</div>
+            <div class="card-body">Overnighted in Rochester, so it's just a short trip to the park. First stop on the way west toward Darien Lake.</div>
             <div class="tags"><span class="tag-tip tag">⭐ 4.6 (5.2k)</span></div>
           </div>
           <div class="map-row">
@@ -748,6 +822,7 @@
             <strong>Comfort Inn &amp; Suites Mt. Holly–Westampton:</strong> 43355581<br>
             <strong>Delta flight (JFK ⇄ LHR):</strong> H5ZEBY<br>
             <strong>Hampton Inn &amp; Suites Springfield/Downtown:</strong> 84977191<br>
+            <strong>Motel 6 Rochester, NY - Airport:</strong> 6778.467.495 · PIN 7176<br>
             <strong>Howard Johnson by Wyndham Brampton:</strong> 6554345186 · PIN 8847
           </div>
         </div>

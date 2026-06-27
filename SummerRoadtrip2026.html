@@ -3,31 +3,31 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>London Trip · Jun 27 – Jul 7</title>
+<title>Summer Roadtrip 2026</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
   :root {
-    /* British palette — deep navy, post-box red, gold, foggy sky */
-    --navy:    #0d1420;
-    --navy2:   #121b2b;
-    --navy3:   #1a2638;
-    --steel:   #2c4a6e;
-    --red:     #b3293b;
-    --red-dim: rgba(179,41,59,0.14);
-    --gold:    #c79a3f;
-    --gold-dim: rgba(199,154,63,0.13);
-    --fog:     #6f8aa6;
-    --fog-dim: rgba(111,138,166,0.12);
-    --sage:    #4a9e7a;
-    --sage-dim: rgba(74,158,122,0.1);
-    --lavender:#8b7fcc;
-    --lav-dim: rgba(139,127,204,0.13);
-    --teal:    #3db8a8;
-    --teal-dim:rgba(61,184,168,0.1);
-    --text:    #e8e4dc;
-    --muted:   #7a8a9a;
-    --faint:   #243549;
+    /* Matches seansnodgrass.com palette */
+    --navy:    #0A0E27;
+    --navy2:   #12162E;
+    --navy3:   #1A1F3A;
+    --steel:   #5E5CE6;
+    --red:     #ff5f57;
+    --red-dim: rgba(255,95,87,0.14);
+    --gold:    #0A84FF;
+    --gold-dim: rgba(10,132,255,0.13);
+    --fog:     #9BA1A6;
+    --fog-dim: rgba(155,161,166,0.12);
+    --sage:    #30D5C8;
+    --sage-dim: rgba(48,213,200,0.1);
+    --lavender:#5E5CE6;
+    --lav-dim: rgba(94,92,230,0.13);
+    --teal:    #30D5C8;
+    --teal-dim:rgba(48,213,200,0.1);
+    --text:    #E8EAED;
+    --muted:   #9BA1A6;
+    --faint:   #1E2642;
     --border:  rgba(255,255,255,0.07);
     --border2: rgba(255,255,255,0.12);
     --r: 12px;
@@ -40,7 +40,7 @@
   body {
     background: var(--navy);
     color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     display: flex;
@@ -50,13 +50,13 @@
   .header { flex-shrink: 0; background: var(--navy2); border-bottom: 1px solid var(--border2); z-index: 200; }
   .header-top { padding: 16px 18px 10px; display: flex; align-items: flex-end; justify-content: space-between; }
   .header-wordmark { display: flex; flex-direction: column; }
-  .union-strip { height: 3px; background: linear-gradient(90deg, var(--red) 0%, var(--gold) 40%, var(--steel) 100%); opacity: 0.7; }
-  .title-line { font-family: 'Playfair Display', Georgia, serif; font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; }
-  .title-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 3px; }
+  .union-strip { height: 3px; background: linear-gradient(90deg, var(--gold) 0%, var(--steel) 50%, var(--sage) 100%); opacity: 0.8; }
+  .title-line { font-family: 'DM Sans', sans-serif; font-size: 24px; font-weight: 700; color: var(--text); letter-spacing: 0.02em; line-height: 1; background: linear-gradient(135deg, var(--text) 0%, var(--gold) 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .title-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.04em; margin-top: 4px; }
 
   /* scrollable tab row (lots of legs) */
   .tabs { display: flex; padding: 0 10px; gap: 0; border-top: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .tab { flex: 0 0 auto; padding: 10px 12px 9px; background: transparent; border: none; border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif; font-size: 11.5px; font-weight: 600; color: var(--muted); cursor: pointer; text-align: center; letter-spacing: 0.01em; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .tab { flex: 0 0 auto; padding: 10px 12px 9px; background: transparent; border: none; border-bottom: 2px solid transparent; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; text-align: center; letter-spacing: 0.01em; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
   .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
   .panels { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -66,7 +66,7 @@
   .light-bar { background: var(--gold-dim); border: 1px solid rgba(199,154,63,0.2); border-radius: var(--r); padding: 9px 13px; display: flex; flex-wrap: wrap; gap: 5px 14px; font-size: 11.5px; color: #d4ad5e; margin-bottom: 14px; }
   .light-bar strong { color: var(--gold); }
 
-  .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 18px 0 8px 2px; }
+  .section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 18px 0 8px 2px; }
   .section-label:first-child { margin-top: 0; }
 
   .timeline { position: relative; padding-left: 20px; }
@@ -129,17 +129,17 @@
   <div class="union-strip"></div>
   <div class="header-top">
     <div class="header-wordmark">
-      <div class="title-line">London Trip</div>
-      <div class="title-sub">Jun 27 – Jul 7 · Hebron, KY → London → Hebron, KY</div>
+      <div class="title-line">Summer Roadtrip 2026</div>
+      <div class="title-sub">Jun 27 – Jul 11 · Hebron, KY → Europe → Hebron, KY</div>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab active" onclick="switchDay('pretrip',this)">Pre-Trip</button>
+    <button class="tab" onclick="switchDay('pretrip',this)">Pre-Trip</button>
     <button class="tab" onclick="switchDay('d1',this)">Sat 6/27</button>
     <button class="tab" onclick="switchDay('d2',this)">Sun 6/28</button>
     <button class="tab" onclick="switchDay('d3',this)">Mon 6/29</button>
     <button class="tab" onclick="switchDay('d4',this)">Tue 6/30</button>
-    <button class="tab" onclick="switchDay('london',this)">London</button>
+    <button class="tab" onclick="switchDay('europe',this)">Europe</button>
     <button class="tab" onclick="switchDay('d4b',this)">Tue 7/7</button>
     <button class="tab" onclick="switchDay('d5',this)">Wed 7/8</button>
     <button class="tab" onclick="switchDay('d6',this)">Thu 7/9</button>
@@ -152,18 +152,18 @@
 <div class="panels">
 
   <!-- ════════════ PRE-TRIP ════════════ -->
-  <div class="day-panel active" id="pretrip">
+  <div class="day-panel" id="pretrip">
     <div class="light-bar">
       <span>🏠 Departing <strong>1688 Grandview, Hebron, KY</strong></span>
-      <span>✈️ Outbound flight <strong>Tue Jul 30, 10:00pm JFK → LHR</strong></span>
+      <span>✈️ Outbound flight <strong>Tue 6/30, 10:00pm JFK → LHR</strong></span>
     </div>
 
     <div class="section-label">Trip Overview</div>
     <div class="card">
       <div class="card-inner">
         <div class="card-hood">The route</div>
-        <div class="card-title">Road trip to JFK → fly to London → road trip home</div>
-        <div class="card-body">Driving from Hebron, KY to JFK over 3 nights, hitting a few amusement parks along the way, then flying overnight to London for the main trip (Jul 1–7). Return leg home is still being booked — see the Return Trip tab.</div>
+        <div class="card-title">Road trip to JFK → fly to Europe → road trip home</div>
+        <div class="card-body">Driving from Hebron, KY to JFK over 3 nights, hitting a few amusement parks along the way, then flying overnight to London for the main trip (Jul 1–7), then flying back into JFK and driving home over 4 more nights of parks.</div>
       </div>
     </div>
 
@@ -345,6 +345,18 @@
   <div class="day-panel" id="d3">
     <div class="light-bar"><span>📍 Overnight in <strong>Westampton, NJ</strong></span></div>
 
+    <div class="card priority" style="margin-bottom:14px;">
+      <div class="card-inner">
+        <div class="card-hood">⏰ Reminder</div>
+        <div class="card-title">Check in for tomorrow's flight</div>
+        <div class="card-body">Delta check-in opens 24 hours before departure (10:00pm Tue 6/30), so it opens tonight. Check in via the Delta app or website and save your boarding pass.</div>
+        <div class="tags"><span class="tag tag-conf">Conf# H5ZEBY</span></div>
+      </div>
+      <div class="map-row">
+        <a class="map-btn" href="https://www.delta.com/checkin" target="_blank">Check in on Delta</a>
+      </div>
+    </div>
+
     <div class="section-label">Amusement Parks</div>
     <div class="timeline">
       <div class="stop park">
@@ -440,24 +452,6 @@
       <div class="stop park">
         <div class="stop-time">Midday</div>
         <div class="stop-dot"></div>
-        <div class="route-pill">🚗 ~50 min east to the shore</div>
-        <div class="card">
-          <div class="card-inner">
-            <div class="card-hood">Seaside Heights, NJ</div>
-            <div class="card-title">Casino Pier &amp; Breakwater Beach</div>
-            <div class="card-body">⭐ 4.5 (3.5k)</div>
-          </div>
-          <div class="map-row">
-            <a class="map-btn" href="maps://?q=Casino+Pier+Breakwater+Beach" target="_blank">
-              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
-              Apple Maps
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="stop park">
-        <div class="stop-time">Afternoon</div>
-        <div class="stop-dot"></div>
         <div class="route-pill">🚗 ~50 min south to Ocean City</div>
         <div class="card">
           <div class="card-inner">
@@ -467,6 +461,24 @@
           </div>
           <div class="map-row">
             <a class="map-btn" href="maps://?q=Castaway+Cove+Ocean+City+NJ" target="_blank">
+              <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
+              Apple Maps
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="stop park">
+        <div class="stop-time">Afternoon</div>
+        <div class="stop-dot"></div>
+        <div class="route-pill">🚗 ~50 min north to Seaside Heights</div>
+        <div class="card">
+          <div class="card-inner">
+            <div class="card-hood">Seaside Heights, NJ</div>
+            <div class="card-title">Casino Pier &amp; Breakwater Beach</div>
+            <div class="card-body">⭐ 4.5 (3.5k)</div>
+          </div>
+          <div class="map-row">
+            <a class="map-btn" href="maps://?q=Casino+Pier+Breakwater+Beach" target="_blank">
               <svg class="logo-apple" viewBox="0 0 14 14" fill="currentColor"><path d="M11.07 7.36c-.02-1.98 1.62-2.93 1.69-2.97-0.92-1.35-2.35-1.53-2.86-1.55-1.22-.12-2.38.72-3 .72-.62 0-1.57-.7-2.59-.68C2.88 2.9 1.6 3.8 0.89 5.15c-1.44 2.5-.37 6.2 1.03 8.22.69.99 1.5 2.1 2.57 2.06 1.03-.04 1.42-.66 2.67-.66 1.24 0 1.59.66 2.67.64 1.11-.02 1.81-1.01 2.49-2 .79-1.14 1.11-2.26 1.12-2.31-.02-.01-2.15-.82-2.17-3.28zM9.06 1.93C9.6 1.26 9.97.34 9.87-.6 9.08-.57 8.14.02 7.58.71 7.07 1.33 6.62 2.27 6.74 3.18c.87.07 1.77-.44 2.32-1.25z"/></svg>
               Apple Maps
             </a>
@@ -513,17 +525,32 @@
     </div>
   </div>
 
-  <!-- ════════════ LONDON ════════════ -->
-  <div class="day-panel" id="london">
-    <div class="light-bar"><span>🇬🇧 In London <strong>Wed 7/1 – Tue 7/7</strong></span></div>
-    <div class="card">
+  <!-- ════════════ EUROPE ════════════ -->
+  <div class="day-panel" id="europe">
+    <div class="light-bar"><span>🇬🇧 In Europe <strong>Wed 7/1 – Tue 7/7</strong></span></div>
+
+    <div class="card priority" style="margin-bottom:14px;">
       <div class="card-inner">
-        <div class="card-hood">Main trip</div>
-        <div class="card-title">London itinerary lives separately</div>
-        <div class="card-body">This site is the before/after bookend for the road-trip + flight legs. Once the day-by-day London plans (sights, food, neighborhoods) are ready, this tab is the natural place to drop in a timeline matching the Amsterdam page's style.</div>
-        <div class="tags"><span class="tag tag-tbd">placeholder — to be filled in</span></div>
+        <div class="card-hood">⏰ Reminder</div>
+        <div class="card-title">Check in for the return flight</div>
+        <div class="card-body">Delta check-in opens 24 hours before departure for the JFK-bound leg. Check in via the Delta app or website and save your boarding pass before heading to the airport.</div>
+        <div class="tags"><span class="tag tag-conf">Conf# H5ZEBY</span></div>
+      </div>
+      <div class="map-row">
+        <a class="map-btn" href="https://www.delta.com/checkin" target="_blank">Check in on Delta</a>
       </div>
     </div>
+
+    <div class="section-label">Day-by-day itinerary</div>
+    <a href="amsterdam.html" style="text-decoration:none;">
+      <div class="card priority">
+        <div class="card-inner">
+          <div class="card-hood">Main trip</div>
+          <div class="card-title">🇳🇱 Open the Amsterdam itinerary →</div>
+          <div class="card-body">The full day-by-day plan for the main leg of the trip lives on its own page, in the same style as this one.</div>
+        </div>
+      </div>
+    </a>
   </div>
 
   <!-- ════════════ DAY 4B — Tue 7/7 — Land at JFK + Six Flags New England ════════════ -->
@@ -836,7 +863,7 @@
       <div class="info-card">
         <div class="info-card-inner">
           <div class="info-title">🚧 Still open</div>
-          <div class="info-body">All return-trip hotels are now booked. Still open: the Sat 7/11 final destination (Sandusky vs. Hebron) isn't decided, and the day-by-day London itinerary still needs to be filled in.</div>
+          <div class="info-body">Everything is booked. The only thing left to decide: the Sat 7/11 final destination — Sandusky, OH (overnight) or straight through to Hebron, KY.</div>
         </div>
       </div>
     </div>
@@ -849,9 +876,36 @@ function switchDay(id, btn) {
   document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
   document.querySelector('.panels').scrollTo({top: 0, behavior: 'smooth'});
 }
+
+function defaultTabId() {
+  const etDateStr = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
+  const [m, d, y] = etDateStr.split('/').map(Number);
+  const today = y * 10000 + m * 100 + d;
+  const ranges = [
+    [20260627, 'd1'],
+    [20260628, 'd2'],
+    [20260629, 'd3'],
+    [20260630, 'd4'],
+    [20260701, 'europe'],
+    [20260707, 'd4b'],
+    [20260708, 'd5'],
+    [20260709, 'd6'],
+    [20260710, 'd7'],
+    [20260711, 'd8'],
+  ];
+  let id = 'pretrip';
+  for (const [start, panelId] of ranges) {
+    if (today >= start) id = panelId;
+  }
+  return id;
+}
+
+const initialId = defaultTabId();
+const initialBtn = document.querySelector(`.tab[onclick*="'${initialId}'"]`);
+switchDay(initialId, initialBtn);
 </script>
 </body>
 </html>
